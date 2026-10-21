@@ -1,0 +1,225 @@
+"use client";
+
+import { useCallback, useEffect, useReducer, useRef, useState, type PointerEvent } from "react";
+import gsap from "gsap";
+import { mascotReducer } from "@/lib/mascotReducer";
+import { initialMascotState, type MascotEmotion, type MascotGesture } from "@/types/mascot";
+
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(value, max));
+}
+
+export function useMascotScene() {
+  const [state, dispatch] = useReducer(mascotReducer, initialMascotState);
+  const [busy, setBusy] = useState(false);
+  const [stolen, setStolen] = useState(false);
+  const sceneRef = useRef<HTMLDivElement>(null);
+  const actorRef = useRef<HTMLDivElement>(null);
+  const sendButtonRef = useRef<HTMLButtonElement>(null);
+  const sequenceRef = useRef<gsap.core.Timeline | null>(null);
+  const busyRef = useRef(false);
+  const wanderingIndexRef = useRef(0);
+  const [hint, setHint] = useState("O mascote reage ao seu cursor. Experimente provocar!");
+
+  const speak = useCallback((text: string, emotion?: MascotEmotion, gesture?: MascotGesture) => {
+    dispatch({ type: "SPEAK", text, emotion, gesture });
+  }, []);
+
+  const resetAnimations = useCallback(() => {
+    sequenceRef.current?.kill();
+    sequenceRef.current = null;
+    if (actorRef.current) gsap.to(actorRef.current, { x: 0, y: 0, rotation: 0, duration: .4, overwrite: true });
+    if (sendButtonRef.current) gsap.to(sendButtonRef.current, { x: 0, y: 0, scale: 1, rotation: 0, duration: .4, overwrite: true });
+    busyRef.current = false;
+    setBusy(false);
+    setStolen(false);
+  }, []);
+
+  const setEmotion = useCallback((emotion: MascotEmotion) => {
+    if (busyRef.current) return;
+    dispatch({ type: "SET_EMOTION", emotion });
+    const texts: Record<MascotEmotion, string> = {
+      neutral: "Tudo bem. Vou fingir que estou prestando atenção.",
+      curious: "Pera... o que é isso aí que você está fazendo? 👀",
+      sarcastic: "Uau. Uma pergunta. Que evento histórico.",
+      annoyed: "JÁ FALEI QUE EU ESTOU OCUPADA! (Não estou.)",
+      sleepy: "Só mais cinco minutinhos... zzz...",
+    };
+    speak(texts[emotion], emotion, emotion === "annoyed" ? "shrug" : "idle");
+  }, [speak]);
+
+  const setGesture = useCallback((gesture: MascotGesture) => {
+    if (busyRef.current) return;
+    dispatch({ type: "SET_GESTURE", gesture });
+  }, []);
+
+  const move = useCallback(() => {
+    const actor = actorRef.current;
+    const scene = sceneRef.current;
+    if (!actor || !scene || busyRef.current) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+    const positions = [
+      { x: -.17, y: -.03, rot: -9 },
+      { x: .16, y: .03, rot: 9 },
+      { x: -.05, y: -.09, rot: 4 },
+      { x: .09, y: .08, rot: -4 },
+      { x: 0, y: 0, rot: 0 },
+    ];
+    const index = wanderingIndexRef.current++ % positions.length;
+    const choice = positions[index];
+    const sceneWidth = Math.min(scene.clientWidth, 880);
+    const sceneHeight = Math.min(scene.clientHeight, 660);
+    gsap.to(actor, {
+      x: choice.x * sceneWidth,
+      y: choice.y * sceneHeight,
+      rotation: choice.rot,
+      duration: 1.1,
+      ease: "power2.inOut",
+      overwrite: true,
+    });
+  }, []);
+
+  const onPointerMove = useCallback((event: PointerEvent<HTMLDivElement>) => {
+    // Atualização direta das variáveis CSS, sem rerender por movimento do mouse.
+    const actor = actorRef.current;
+    if (!actor || event.pointerType === "touch") return;
+    const rect = actor.getBoundingClientRect();
+    const diffX = (event.clientX - (rect.left + rect.width / 2)) / Math.max(120, rect.width / 2);
+    const diffY = (event.clientY - (rect.top + rect.height / 2)) / Math.max(120, rect.height / 2);
+    actor.style.setProperty("--pupil-x", `${clamp(diffX * 5.5, -5.5, 5.5)}px`);
+    actor.style.setProperty("--pupil-y", `${clamp(diffY * 4.5, -4.5, 4.5)}px`);
+  }, []);
+
+  const onPointerLeave = useCallback(() => {
+    actorRef.current?.style.setProperty("--pupil-x", "0px");
+    actorRef.current?.style.setProperty("--pupil-y", "0px");
+  }, []);
+
+  const stealButton = useCallback(() => {
+    const scene = sceneRef.current;
+    const actor = actorRef.current;
+    const button = sendButtonRef.current;
+    if (!scene || !actor || !button || busyRef.current) return;
+    busyRef.current = true;
+    setBusy(true);
+    setHint("Roubo em andamento! A IAda está sequestrando o botão...");
+    speak("OPA! Esse botão agora é meu. Vai reclamar com quem?", "sarcastic", "grab");
+
+    const sceneRect = scene.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+    const actorRect = actor.getBoundingClientRect();
+    const currentX = Number(gsap.getProperty(actor, "x")) || 0;
+    const currentY = Number(gsap.getProperty(actor, "y")) || 0;
+    const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+    const buttonCenterY = buttonRect.top + buttonRect.height / 2;
+
+    // A IAda se aproxima de modo que sua mão direita possa alcançar Enviar.
+    const targetCenterX = clamp(buttonCenterX - sceneRect.left - 82, 130, sceneRect.width - 134);
+    const targetCenterY = clamp(buttonCenterY - sceneRect.top - 119, 130, sceneRect.height - 164);
+    const targetX = targetCenterX - sceneRect.width * .5;
+    const targetY = targetCenterY - sceneRect.height * .42;
+
+    // Usar a posição real da mão SVG, em vez de coordenadas rígidas por tela.
+    const arm = actor.querySelector<SVGGElement>(".arm-right");
+    const handRect = arm?.getBoundingClientRect();
+    const handX = (handRect ? handRect.left + handRect.width * .72 : actorRect.left + actorRect.width * .80) + (targetX - currentX);
+    const handY = (handRect ? handRect.top + handRect.height * .55 : actorRect.top + actorRect.height * .61) + (targetY - currentY);
+    const buttonX = handX - buttonCenterX - 12;
+    const buttonY = handY - buttonCenterY + 8;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) {
+      busyRef.current = false;
+      setBusy(false);
+      speak("Tentei fugir com o botão, mas o modo de movimento reduzido me pegou!", "sarcastic", "idle");
+      setHint("Animações complexas reduzidas por sua preferência de acessibilidade.");
+      return;
+    }
+    const tl = gsap.timeline({
+      onComplete: () => {
+        busyRef.current = false;
+        setBusy(false);
+        setStolen(false);
+        speak("Pronto, devolvi. Mas não garanto por quanto tempo.", "annoyed", "shrug");
+        setHint("Agora tente enviar de novo. Talvez ela se renda...");
+        sequenceRef.current = null;
+      },
+    });
+    sequenceRef.current = tl;
+    tl.to(actor, { x: targetX, y: targetY, rotation: -8, duration: .75, ease: "back.out(1.3)", overwrite: true })
+      .call(() => setStolen(true))
+      .to(button, { x: buttonX, y: buttonY, scale: .83, rotation: -9, duration: .38, ease: "back.inOut(2)", overwrite: true })
+      .to(actor, { x: targetX - 95, y: targetY - 62, rotation: 10, duration: .65, ease: "power2.inOut" }, "+=.15")
+      .to(button, { x: buttonX - 95, y: buttonY - 62, rotation: -18, duration: .65, ease: "power2.inOut" }, "<")
+      .to({}, { duration: .6 })
+      .to(button, { x: 0, y: 0, scale: 1, rotation: 0, duration: .55, ease: "back.out(1.3)" })
+      .to(actor, { x: 0, y: 0, rotation: 0, duration: .65, ease: "power2.out" }, "<");
+  }, [speak]);
+
+  const answerPrototype = useCallback(() => {
+    resetAnimations();
+    speak("TÁ BOM, VOCÊ VENCEU! 😤 Nesta versão eu só demonstro minhas animações. Quando conectarmos uma API de IA, responderei sua pergunta de verdade. Infelizmente.", "annoyed", "shrug");
+    setHint("Resistência vencida. Nenhuma consulta de IA foi realizada neste protótipo.");
+  }, [resetAnimations, speak]);
+
+  const send = useCallback((question: string) => {
+    if (busyRef.current) return;
+    if (!question.trim()) {
+      speak("Você quer que eu responda o quê? O silêncio?", "curious", "point");
+      return;
+    }
+    if (state.attempts >= 2) {
+      answerPrototype();
+      return;
+    }
+    dispatch({ type: "REGISTER_ATTEMPT" });
+    stealButton();
+  }, [state.attempts, answerPrototype, speak, stealButton]);
+
+  const enterTease = useCallback(() => {
+    if (busyRef.current) return;
+    speak("Você apertou Enter? Achei que queria escrever uma segunda linha. Eu decido 😌", "sarcastic", "point");
+  }, [speak]);
+
+  const wave = useCallback(() => {
+    if (busyRef.current) return;
+    dispatch({ type: "SET_GESTURE", gesture: "wave" });
+    speak("Oi! Pode acenar de volta. Trabalhar já é outra história.", "neutral", "wave");
+  }, [speak]);
+
+  useEffect(() => {
+    const actorAtMount = actorRef.current;
+    const buttonAtMount = sendButtonRef.current;
+    const timer = window.setInterval(() => {
+      if (!busyRef.current && document.visibilityState === "visible") move();
+    }, 12000);
+    return () => {
+      window.clearInterval(timer);
+      sequenceRef.current?.kill();
+        if (actorAtMount) gsap.killTweensOf(actorAtMount);
+      if (buttonAtMount) gsap.killTweensOf(buttonAtMount);
+    };
+  }, [move]);
+
+  return {
+    state,
+    busy,
+    stolen,
+    sceneRef,
+    actorRef,
+    sendButtonRef,
+    hint,
+    speak,
+    send,
+    setEmotion,
+    setGesture,
+    move,
+    wave,
+    enterTease,
+    onPointerMove,
+    onPointerLeave,
+    answerPrototype,
+    resetAnimations,
+  };
+}
