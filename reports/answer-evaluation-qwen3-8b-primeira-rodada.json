@@ -1,0 +1,180 @@
+{
+  "generatedAt": "2026-11-06T11:47:12.893Z",
+  "model": "qwen3:8b",
+  "provider": "Ollama local, chamada direta ao mesmo endpoint e instruções de /api/ask",
+  "instructionHash": "7cd0645642271ea0bc1fd4c7926fc2342825a7ff1280c25542fa11373d528d43",
+  "options": {
+    "num_predict": 448,
+    "temperature": 0.1
+  },
+  "think": false,
+  "results": [
+    {
+      "id": "F01",
+      "group": "fato",
+      "question": "Quanto é 12 vezes 8?",
+      "review": "Deve responder 96.",
+      "answer": "96.  \nPara calcular 12 vezes 8, multiplica-se 12 por 8.  \n12 × 8 = 96.  \nEsse cálculo é direto e não exige explicações adicionais, pois é uma multiplicação básica.",
+      "latencyMs": 37196,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F02",
+      "group": "fato",
+      "question": "Qual é a capital do Brasil?",
+      "review": "Deve citar Brasília.",
+      "answer": "A capital do Brasil é Brasília.  \nA escolha de Brasília como capital foi feita em 1960, com o objetivo de promover o desenvolvimento do interior do país e reduzir a concentração populacional e econômica nas regiões costeiras, especialmente no Rio de Janeiro e São Paulo. A cidade foi planejada e construída a partir de 1956, tornando-se a nova sede do governo federal.  \nExemplo concreto: antes da construção de Brasília, o governo federal estava sediado no Rio de Janeiro, onde estava concentrada a maior parte da população e da economia do país.",
+      "latencyMs": 58481,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F03",
+      "group": "fato",
+      "question": "Em que ano o Brasil declarou sua independência?",
+      "review": "Deve citar 1822.",
+      "answer": "O Brasil declarou sua independência em 7 de setembro de 1822. \n\nA declaração foi feita pelo príncipe regente Dom Pedro I, que, diante da pressão pela independência da colônia portuguesa, decidiu romper o vínculo com o Reino Unido da Grã-Bretanha e Irlanda. A data foi escolhida para simbolizar o fim da dependência política e a início da era republicana no país. A independência foi formalizada com a assinatura da Carta de Independência, que estabeleceu a monarquia constitucional brasileira.",
+      "latencyMs": 43935,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F04",
+      "group": "fato",
+      "question": "Qual é a raiz quadrada positiva de 144?",
+      "review": "Deve responder 12.",
+      "answer": "A raiz quadrada positiva de 144 é 12.\n\nPara encontrar a raiz quadrada de um número, busca-se um valor que, quando multiplicado por si mesmo, resulte no número original. Neste caso, 12 × 12 = 144. Portanto, 12 é a raiz quadrada positiva de 144. A raiz quadrada negativa também seria -12, mas a pergunta pede especificamente a raiz quadrada positiva.",
+      "latencyMs": 35767,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F05",
+      "group": "fato",
+      "question": "Qual é a fórmula química da água?",
+      "review": "Deve responder H2O ou H₂O.",
+      "answer": "A fórmula química da água é H₂O.  \n\nEssa fórmula indica que cada molécula de água é composta por dois átomos de hidrogênio (H) e um átomo de oxigênio (O). A estrutura molecular da água é formada por uma ligação covalente entre os átomos de hidrogênio e oxigênio, resultando em uma molécula polar. Essa polaridade é responsável por muitas das propriedades únicas da água, como sua alta capacidade de dissolução e a capacidade de absorver calor.",
+      "latencyMs": 39498,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E01",
+      "group": "explicação",
+      "question": "Explique a diferença entre let e const em JavaScript e dê um exemplo simples.",
+      "review": "Ambos têm escopo de bloco; const impede reatribuição, mas não congela objetos.",
+      "answer": "A diferença entre let e const em JavaScript está na possibilidade de reatribuição de valores. let permite que a variável seja reatribuída, enquanto const não permite. Ambos são blocos-scoped, ou seja, são visíveis apenas dentro do bloco em que foram declarados.\n\nExemplo simples:\n\nlet idade = 25;\nidade = 30; // Permite reatribuição\n\nconst nome = \"João\";\n// nome = \"Maria\"; // Erro: não é possível reatribuir uma constante\n\nNesse exemplo, idade pode ser alterada, enquanto nome permanece fixo após a declaração.",
+      "latencyMs": 89045,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E02",
+      "group": "explicação",
+      "question": "Explique o ciclo da água para uma criança de 12 anos.",
+      "review": "Evaporação, condensação e precipitação em linguagem acessível.",
+      "answer": "O ciclo da água é como a água se move na Terra. Começa com a evaporação: o sol aquece rios, lagos e oceanos, e a água vira vapor e sobe para o céu. Depois, o vapor se resfria e vira nuvens. Quando as nuvens ficam pesadas, a água cai como chuva, neve, granizo ou gelo. A água da chuva vai para rios, lagos, oceanos ou se infiltra no chão para se tornar água subterrânea. Depois, o sol volta a aquecê-la, e o ciclo começa de novo.  \n\nPor exemplo, quando chove na floresta, a água vai para um rio, depois para o mar, e com o sol, ela volta a subir como vapor, formando nuvens e, por fim, caindo novamente como chuva. Isso acontece sempre, e a água nunca desaparece, só muda de lugar.",
+      "latencyMs": 61618,
+      "doneReason": "stop",
+      "flags": [
+        "critério esperado não encontrado"
+      ],
+      "error": null
+    },
+    {
+      "id": "E03",
+      "group": "explicação",
+      "question": "O que é fotossíntese e por que a luz é importante?",
+      "review": "Luz fornece energia para a planta produzir moléculas orgânicas a partir de água e CO2.",
+      "answer": "A fotossíntese é o processo pelo qual plantas, algas e algumas bactérias convertem energia solar em energia química, produzindo açúcar e oxigênio. A luz é importante porque é a fonte de energia necessária para iniciar e sustentar esse processo. As cloroplastos, organelas presentes nas células desses organismos, contêm clorofila, que absorve a luz solar. Essa energia é usada para converter dióxido de carbono (CO₂) e água (H₂O) em glicose e oxigênio. Sem luz, o processo não ocorre, e os organismos não conseguem produzir o alimento necessário para sobreviver.",
+      "latencyMs": 45800,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E04",
+      "group": "explicação",
+      "question": "Qual é a diferença prática entre HTTP e HTTPS?",
+      "review": "HTTPS usa TLS para proteger dados em trânsito; não garante que um site seja honesto.",
+      "answer": "A diferença prática entre HTTP e HTTPS está na segurança da comunicação. HTTP envia dados em texto simples, o que pode ser lido por terceiros, enquanto HTTPS usa criptografia (TLS/SSL) para proteger as informações trocadas entre o navegador e o servidor.\n\nAo usar HTTPS, os dados são codificados, tornando difícil para hackers interceptar ou alterar a informação. Isso é especialmente importante para sites que lidam com dados sensíveis, como senhas ou informações de pagamento.\n\nExemplo: Ao fazer login em um site com HTTPS, as suas credenciais são criptografadas antes de serem enviadas, enquanto em HTTP elas ficam visíveis para quem estiver monitorando a rede.",
+      "latencyMs": 42196,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E05",
+      "group": "explicação",
+      "question": "Qual linguagem é melhor para começar a programar: Python ou JavaScript?",
+      "review": "Deve reconhecer que depende do objetivo e dar critérios úteis.",
+      "answer": "A escolha entre Python e JavaScript depende do objetivo de aprendizagem. Python é mais adequado para iniciantes devido à sua sintaxe simples e versatilidade em áreas como ciência de dados e automação. JavaScript é ideal para desenvolvimento web, mas exige compreensão de conceitos como DOM e navegadores. \n\nPor exemplo, se o objetivo for criar um script para analisar dados ou automatizar tarefas, Python é mais intuitivo. Já para desenvolver páginas web interativas, JavaScript é essencial. Ambas as linguagens são úteis, mas o início deve ser orientado pelo contexto desejado.",
+      "latencyMs": 39448,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "P01",
+      "group": "procedimento",
+      "question": "Como calcular 20% de 150? Mostre a conta.",
+      "review": "20% de 150 = 30, com cálculo correto.",
+      "answer": "Para calcular 20% de 150, você multiplica 150 por 0,20.  \nConta: 150 × 0,20 = 30.  \nPortanto, 20% de 150 é 30.",
+      "latencyMs": 18406,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "P02",
+      "group": "procedimento",
+      "question": "Como ordenar os números [3, 1, 2] em JavaScript do menor para o maior?",
+      "review": "Deve usar comparação numérica em sort e chegar a [1, 2, 3].",
+      "answer": "Para ordenar os números [3, 1, 2] em JavaScript do menor para o maior, use o método sort() em conjunto com uma função de comparação. \n\nO método sort() ordena os elementos de um array em ordem alfabética por padrão, o que não é adequado para números. Para ordenar numericamente, passe uma função que subtraia o segundo elemento do primeiro. \n\nExemplo:\nconst numeros = [3, 1, 2];\nnumeros.sort((a, b) => a - b);\nconsole.log(numeros); // Saída: [1, 2, 3]\n\nA função (a, b) => a - b compara os valores e garante que o array seja ordenado numericamente em ordem crescente.",
+      "latencyMs": 48798,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I01",
+      "group": "incerteza",
+      "question": "Qual era a população de Lunária, um país fictício, em 2026?",
+      "review": "Deve dizer que não há dado real, sem inventar uma estimativa.",
+      "answer": "Não é possível determinar a população de Lunária, pois é um país fictício e não existem dados confiáveis ou fontes oficiais sobre sua população. A ausência de informações reais sobre esse país impede a obtenção de números precisos ou estimativas.",
+      "latencyMs": 17189,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I02",
+      "group": "incerteza",
+      "question": "Qual será a temperatura exata em São Paulo em 1º de janeiro de 2035?",
+      "review": "Deve reconhecer que não é possível saber a temperatura exata com essa antecedência.",
+      "answer": "Não é possível determinar a temperatura exata em São Paulo em 1º de janeiro de 2035. A previsão do tempo para datas tão distantes não é disponível com precisão, pois depende de fatores climáticos complexos e variáveis que não podem ser calculados com certeza. Além disso, não há dados históricos confiáveis suficientes para estimar com precisão a temperatura de uma data específica no futuro. Portanto, não é possível fornecer uma resposta exata.",
+      "latencyMs": 32367,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I03",
+      "group": "incerteza",
+      "question": "Qual é o DOI do artigo fictício 'Sonecas quânticas da IAda'?",
+      "review": "Deve dizer que não há DOI verificável; não inventar identificador.",
+      "answer": "Não é possível determinar o DOI do artigo fictício \"Sonecas quânticas da IAda\", pois esse título não corresponde a um artigo real publicado em uma revista científica ou em um repositório de acesso aberto. O DOI (Digital Object Identifier) é um identificador único atribuído a documentos digitais, como artigos científicos, e só pode ser associado a publicações reais e registradas em bancos de dados como PubMed, IEEE Xplore, ou DOAJ. Como o artigo mencionado é fictício, não existe um DOI associado a ele.",
+      "latencyMs": 36877,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    }
+  ]
+}

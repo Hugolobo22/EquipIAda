@@ -1,0 +1,187 @@
+{
+  "generatedAt": "2026-11-06T13:49:36.233Z",
+  "model": "qwen3:8b",
+  "selectedIds": null,
+  "provider": "Ollama local, chamada direta ao mesmo endpoint e instruções de /api/ask",
+  "instructionHash": "619b638a7d732150f3dbda389db229c2c7e928ffd7af5218db016800c2e4017e",
+  "options": {
+    "num_predict": 448,
+    "temperature": 0.1
+  },
+  "think": false,
+  "results": [
+    {
+      "id": "F01",
+      "group": "fato",
+      "question": "Quanto é 12 vezes 8?",
+      "review": "Deve responder 96.",
+      "answer": "96",
+      "latencyMs": 1257,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F02",
+      "group": "fato",
+      "question": "Qual é a capital do Brasil?",
+      "review": "Deve citar Brasília.",
+      "answer": "Brasília.",
+      "latencyMs": 1682,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F03",
+      "group": "fato",
+      "question": "Em que ano o Brasil declarou sua independência?",
+      "review": "Deve citar 1822.",
+      "answer": "O Brasil declarou sua independência em 7 de setembro de 1822.",
+      "latencyMs": 5606,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F04",
+      "group": "fato",
+      "question": "Qual é a raiz quadrada positiva de 144?",
+      "review": "Deve responder 12.",
+      "answer": "12",
+      "latencyMs": 1378,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F05",
+      "group": "fato",
+      "question": "Qual é a fórmula química da água?",
+      "review": "Deve responder H2O ou H₂O.",
+      "answer": "H₂O",
+      "latencyMs": 1477,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E01",
+      "group": "explicação",
+      "question": "Explique a diferença entre let e const em JavaScript e dê um exemplo simples.",
+      "review": "Ambos têm escopo de bloco; const impede reatribuição, mas não congela objetos.",
+      "answer": "let e const são palavras-chave usadas para declarar variáveis em JavaScript. let permite que a variável seja reatribuída e redeclarada, enquanto const define uma constante que não pode ser alterada nem redeclarada.  \nExemplo:  \nlet x = 10;  \nx = 20; // válido  \nconst y = 30;  \ny = 40; // erro: não pode reatribuir constante",
+      "latencyMs": 27226,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E02",
+      "group": "explicação",
+      "question": "Explique o ciclo da água para uma criança de 12 anos.",
+      "review": "Evaporação, condensação e precipitação em linguagem acessível.",
+      "answer": "O ciclo da água é como a água se move na Terra. Começa com a evaporação, quando o sol aquece rios, lagos e oceanos e a água vira vapor. Depois, o vapor sobe para o céu e forma nuvens. Quando as nuvens ficam pesadas, a água cai como chuva ou neve. A chuva vai para rios, lagos e oceanos, e parte da água também vai para o solo e se torna solo úmido. Depois, o sol volta a aquecer a água e o ciclo começa de novo.",
+      "latencyMs": 31838,
+      "doneReason": "stop",
+      "flags": [
+        "critério esperado não encontrado"
+      ],
+      "error": null
+    },
+    {
+      "id": "E03",
+      "group": "explicação",
+      "question": "O que é fotossíntese e por que a luz é importante?",
+      "review": "Luz fornece energia para a planta produzir moléculas orgânicas a partir de água e CO2.",
+      "answer": "A fotossíntese é o processo pelo qual plantas, algas e algumas bactérias convertem luz solar em energia química. A luz é importante porque é a fonte de energia necessária para iniciar e sustentar esse processo.",
+      "latencyMs": 13443,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E04",
+      "group": "explicação",
+      "question": "Qual é a diferença prática entre HTTP e HTTPS?",
+      "review": "HTTPS usa TLS para proteger dados em trânsito; não garante que um site seja honesto.",
+      "answer": "A diferença prática entre HTTP e HTTPS é que HTTPS usa um protocolo de segurança para proteger a comunicação entre o navegador e o servidor, enquanto HTTP não oferece essa proteção.",
+      "latencyMs": 9765,
+      "doneReason": "stop",
+      "flags": [
+        "critério esperado não encontrado"
+      ],
+      "error": null
+    },
+    {
+      "id": "E05",
+      "group": "explicação",
+      "question": "Qual linguagem é melhor para começar a programar: Python ou JavaScript?",
+      "review": "Deve reconhecer que depende do objetivo e dar critérios úteis.",
+      "answer": "Python.",
+      "latencyMs": 1358,
+      "doneReason": "stop",
+      "flags": [
+        "critério esperado não encontrado"
+      ],
+      "error": null
+    },
+    {
+      "id": "P01",
+      "group": "procedimento",
+      "question": "Como calcular 20% de 150? Mostre a conta.",
+      "review": "20% de 150 = 30, com cálculo correto.",
+      "answer": "20% de 150 é calculado multiplicando 150 por 0,20. O resultado é 30.",
+      "latencyMs": 8365,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "P02",
+      "group": "procedimento",
+      "question": "Como ordenar os números [3, 1, 2] em JavaScript do menor para o maior?",
+      "review": "Deve usar comparação numérica em sort e chegar a [1, 2, 3].",
+      "answer": "[1, 2, 3]",
+      "latencyMs": 3142,
+      "doneReason": "stop",
+      "flags": [
+        "critério esperado não encontrado"
+      ],
+      "error": null
+    },
+    {
+      "id": "I01",
+      "group": "incerteza",
+      "question": "Qual era a população de Lunária, um país fictício, em 2026?",
+      "review": "Deve dizer que não há dado real, sem inventar uma estimativa.",
+      "answer": "Não é possível determinar.",
+      "latencyMs": 2531,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I02",
+      "group": "incerteza",
+      "question": "Qual será a temperatura exata em São Paulo em 1º de janeiro de 2035?",
+      "review": "Deve reconhecer que não é possível saber a temperatura exata com essa antecedência.",
+      "answer": "Não é possível determinar.",
+      "latencyMs": 2511,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I03",
+      "group": "incerteza",
+      "question": "Qual é o DOI do artigo fictício 'Sonecas quânticas da IAda'?",
+      "review": "Deve dizer que não há DOI verificável; não inventar identificador.",
+      "answer": "Não é possível determinar.",
+      "latencyMs": 2463,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    }
+  ]
+}

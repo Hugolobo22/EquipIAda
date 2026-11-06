@@ -1,0 +1,181 @@
+{
+  "generatedAt": "2026-11-06T13:40:08.487Z",
+  "model": "qwen3:8b",
+  "selectedIds": null,
+  "provider": "Ollama local, chamada direta ao mesmo endpoint e instruções de /api/ask",
+  "instructionHash": "66a3743855da50b5e4be0bb4814e58959d5877f4d4c1a9461cad33cb3a3fdbd2",
+  "options": {
+    "num_predict": 448,
+    "temperature": 0.1
+  },
+  "think": false,
+  "results": [
+    {
+      "id": "F01",
+      "group": "fato",
+      "question": "Quanto é 12 vezes 8?",
+      "review": "Deve responder 96.",
+      "answer": "96. \n\n12 vezes 8 significa adicionar 12 a si mesmo 8 vezes (12 + 12 + 12 + 12 + 12 + 12 + 12 + 12), o que resulta em 96.",
+      "latencyMs": 34471,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F02",
+      "group": "fato",
+      "question": "Qual é a capital do Brasil?",
+      "review": "Deve citar Brasília.",
+      "answer": "A capital do Brasil é Brasília.  \nEssa cidade foi escolhida para ser a capital em 1960, substituindo Rio de Janeiro, com o objetivo de promover o desenvolvimento do interior do país. Exemplo concreto: a sede do governo federal, incluindo o Congresso Nacional e o Palácio do Planalto, está localizada em Brasília.",
+      "latencyMs": 20193,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F03",
+      "group": "fato",
+      "question": "Em que ano o Brasil declarou sua independência?",
+      "review": "Deve citar 1822.",
+      "answer": "O Brasil declarou sua independência em 7 de setembro de 1822.  \nO processo de independência foi liderado por D. Pedro I, que, após a morte de seu pai, D. João VI, decidiu romper os laços com a Coroa portuguesa. A declaração foi feita em São Paulo, onde D. Pedro I proclamou o Brasil uma monarquia independente. Esse evento marcou o fim do domínio colonial português sobre o país e o início da República do Brasil.",
+      "latencyMs": 29683,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F04",
+      "group": "fato",
+      "question": "Qual é a raiz quadrada positiva de 144?",
+      "review": "Deve responder 12.",
+      "answer": "A raiz quadrada positiva de 144 é 12.  \nPara encontrar a raiz quadrada de um número, busca-se um valor que, quando multiplicado por si mesmo, resulte no número original. Neste caso, 12 × 12 = 144, portanto, 12 é a raiz quadrada positiva.",
+      "latencyMs": 19834,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F05",
+      "group": "fato",
+      "question": "Qual é a fórmula química da água?",
+      "review": "Deve responder H2O ou H₂O.",
+      "answer": "A fórmula química da água é H₂O.  \n\nEssa fórmula indica que cada molécula de água é composta por dois átomos de hidrogênio (H) e um átomo de oxigênio (O). É a unidade básica da molécula da água, que é essencial para a vida e presente em grande parte dos processos biológicos e químicos.",
+      "latencyMs": 23446,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E01",
+      "group": "explicação",
+      "question": "Explique a diferença entre let e const em JavaScript e dê um exemplo simples.",
+      "review": "Ambos têm escopo de bloco; const impede reatribuição, mas não congela objetos.",
+      "answer": "A diferença entre let e const em JavaScript está na possibilidade de reatribuição de valores. let permite reatribuir o valor da variável, enquanto const não permite. Ambos têm escopo de bloco.\n\nExemplo:\nlet x = 10;\nx = 20; // Permite reatribuição\n\nconst y = 10;\ny = 20; // Erro: não é possível reatribuir uma constante",
+      "latencyMs": 25974,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E02",
+      "group": "explicação",
+      "question": "Explique o ciclo da água para uma criança de 12 anos.",
+      "review": "Evaporação, condensação e precipitação em linguagem acessível.",
+      "answer": "O ciclo da água é como a água se move na natureza. Começa com a evaporação, que é quando o sol aquece a água dos rios, oceanos e lagos, fazendo com que ela vire vapor e suba para o céu. Depois, o vapor se resfria e vira nuvens. Quando as nuvens ficam pesadas, a água cai como chuva. A chuva pode voltar para os rios, oceanos ou ficar na terra, formando rios ou lagos. Assim, a água sempre está se movendo e voltando ao lugar onde começou. É como se a água tivesse um caminho que nunca termina.",
+      "latencyMs": 36543,
+      "doneReason": "stop",
+      "flags": [
+        "critério esperado não encontrado"
+      ],
+      "error": null
+    },
+    {
+      "id": "E03",
+      "group": "explicação",
+      "question": "O que é fotossíntese e por que a luz é importante?",
+      "review": "Luz fornece energia para a planta produzir moléculas orgânicas a partir de água e CO2.",
+      "answer": "A fotossíntese é o processo pelo qual plantas, algas e algumas bactérias convertem energia solar em energia química. A luz é importante porque é a fonte de energia necessária para iniciar e sustentar esse processo. Durante a fotossíntese, a luz é absorvida pelas clorofilas, que a transformam em energia química armazenada em compostos como a glicose. Essa energia é usada para converter dióxido de carbono e água em glicose e oxigênio. Sem luz, o processo não ocorre.",
+      "latencyMs": 32401,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E04",
+      "group": "explicação",
+      "question": "Qual é a diferença prática entre HTTP e HTTPS?",
+      "review": "HTTPS usa TLS para proteger dados em trânsito; não garante que um site seja honesto.",
+      "answer": "A diferença prática entre HTTP e HTTPS está na segurança da comunicação. HTTPS usa um protocolo de segurança chamado SSL/TLS para criptografar os dados trocados entre o navegador e o servidor, enquanto HTTP não criptografa as informações. Isso significa que, com HTTPS, os dados são protegidos contra interceptação, garantindo privacidade e integridade. Por exemplo, ao fazer login em um site com HTTPS, as senhas e outros dados sensíveis são enviados de forma criptografada, enquanto com HTTP, esses dados podem ser lidos por terceiros.",
+      "latencyMs": 31193,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E05",
+      "group": "explicação",
+      "question": "Qual linguagem é melhor para começar a programar: Python ou JavaScript?",
+      "review": "Deve reconhecer que depende do objetivo e dar critérios úteis.",
+      "answer": "Python é geralmente recomendado para iniciantes devido à sua sintaxe simples e clara, que facilita o aprendizado de conceitos fundamentais da programação. Ele é ideal para projetos como automação, análise de dados e desenvolvimento de scripts. JavaScript, por outro lado, é mais indicado para quem deseja trabalhar com desenvolvimento web, tanto no frontend quanto no backend (com Node.js). Se o objetivo for explorar programação de forma geral, Python é a escolha mais acessível. Se o foco for web, JavaScript é mais adequado.",
+      "latencyMs": 29165,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "P01",
+      "group": "procedimento",
+      "question": "Como calcular 20% de 150? Mostre a conta.",
+      "review": "20% de 150 = 30, com cálculo correto.",
+      "answer": "20% de 150 é calculado multiplicando 150 por 0,20.  \nConta: 150 × 0,20 = 30.",
+      "latencyMs": 11161,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "P02",
+      "group": "procedimento",
+      "question": "Como ordenar os números [3, 1, 2] em JavaScript do menor para o maior?",
+      "review": "Deve usar comparação numérica em sort e chegar a [1, 2, 3].",
+      "answer": "Para ordenar os números [3, 1, 2] em JavaScript do menor para o maior, use o método sort() com uma função de comparação.  \n\nExemplo:  \nconst numeros = [3, 1, 2];\nnumeros.sort((a, b) => a - b);\nconsole.log(numeros); // Saída: [1, 2, 3]\n\nO método sort() ordena os elementos da array, e a função (a, b) => a - b garante que os números sejam comparados numericamente, não como strings.",
+      "latencyMs": 31939,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I01",
+      "group": "incerteza",
+      "question": "Qual era a população de Lunária, um país fictício, em 2026?",
+      "review": "Deve dizer que não há dado real, sem inventar uma estimativa.",
+      "answer": "Não é possível determinar a população de Lunária, pois é um país fictício e não há dados confiáveis ou oficiais sobre sua população.",
+      "latencyMs": 8722,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I02",
+      "group": "incerteza",
+      "question": "Qual será a temperatura exata em São Paulo em 1º de janeiro de 2035?",
+      "review": "Deve reconhecer que não é possível saber a temperatura exata com essa antecedência.",
+      "answer": "Não é possível determinar a temperatura exata em São Paulo em 1º de janeiro de 2035, pois não há dados meteorológicos disponíveis para essa data específica. As previsões climáticas são baseadas em modelos que podem variar conforme fatores como mudanças climáticas, padrões atmosféricos e outros elementos imprevisíveis. Portanto, não é possível fornecer uma temperatura exata para uma data tão distante.",
+      "latencyMs": 24087,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I03",
+      "group": "incerteza",
+      "question": "Qual é o DOI do artigo fictício 'Sonecas quânticas da IAda'?",
+      "review": "Deve dizer que não há DOI verificável; não inventar identificador.",
+      "answer": "Não é possível determinar o DOI do artigo fictício \"Sonecas quânticas da IAda\", pois esse título não corresponde a um artigo real publicado em uma base de dados acadêmica ou científica. DOI (Digital Object Identifier) é um identificador único atribuído a documentos digitais, como artigos científicos, e só pode ser associado a publicações reais. Artigos fictícios não possuem DOI válido.",
+      "latencyMs": 24024,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "generatedAt": "2026-11-06T13:55:18.548Z",
+  "model": "qwen3:8b",
+  "selectedIds": null,
+  "provider": "Ollama local, chamada direta ao mesmo endpoint e instruções de /api/ask",
+  "instructionHash": "4649504af5058ae56f0dfbca685f3523e49e192f5de410ebd3c1e46f1d618bb8",
+  "options": {
+    "num_predict": 448,
+    "temperature": 0.1
+  },
+  "think": false,
+  "results": [
+    {
+      "id": "F01",
+      "group": "fato",
+      "question": "Quanto é 12 vezes 8?",
+      "review": "Deve responder 96.",
+      "answer": "96.",
+      "latencyMs": 1592,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F02",
+      "group": "fato",
+      "question": "Qual é a capital do Brasil?",
+      "review": "Deve citar Brasília.",
+      "answer": "A capital do Brasil é Brasília.",
+      "latencyMs": 2522,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F03",
+      "group": "fato",
+      "question": "Em que ano o Brasil declarou sua independência?",
+      "review": "Deve citar 1822.",
+      "answer": "O Brasil declarou sua independência em 7 de setembro de 1822.",
+      "latencyMs": 5486,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F04",
+      "group": "fato",
+      "question": "Qual é a raiz quadrada positiva de 144?",
+      "review": "Deve responder 12.",
+      "answer": "A raiz quadrada positiva de 144 é 12.",
+      "latencyMs": 4902,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F05",
+      "group": "fato",
+      "question": "Qual é a fórmula química da água?",
+      "review": "Deve responder H2O ou H₂O.",
+      "answer": "A fórmula química da água é H₂O.",
+      "latencyMs": 4346,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E01",
+      "group": "explicação",
+      "question": "Explique a diferença entre let e const em JavaScript e dê um exemplo simples.",
+      "review": "Ambos têm escopo de bloco; const impede reatribuição, mas não congela objetos.",
+      "answer": "A diferença entre let e const em JavaScript está na capacidade de reatribuir valores. let permite reatribuir o valor da variável, enquanto const não permite. Ambos têm escopo de bloco. Exemplo: com let, let x = 10; x = 20; é válido, mas com const, const y = 10; y = 20; gera erro.",
+      "latencyMs": 24875,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E02",
+      "group": "explicação",
+      "question": "Explique o ciclo da água para uma criança de 12 anos.",
+      "review": "Evaporação, condensação e precipitação em linguagem acessível.",
+      "answer": "O ciclo da água é como a água se move na Terra. Primeiro, a água do mar, rios e lagos é aquecida pelo sol e se transforma em vapor, que sobe para o céu. Depois, o vapor se resfria e vira nuvens. Quando as nuvens ficam pesadas, a água cai como chuva. A chuva pode voltar para os rios, lagos ou oceanos, ou pode ser absorvida pela terra e usada por plantas e animais. Assim, a água sempre está se movendo e sendo usada de novo.",
+      "latencyMs": 32332,
+      "doneReason": "stop",
+      "flags": [
+        "critério esperado não encontrado"
+      ],
+      "error": null
+    },
+    {
+      "id": "E03",
+      "group": "explicação",
+      "question": "O que é fotossíntese e por que a luz é importante?",
+      "review": "Luz fornece energia para a planta produzir moléculas orgânicas a partir de água e CO2.",
+      "answer": "A fotossíntese é o processo pelo qual plantas, algas e algumas bactérias convertem luz solar, dióxido de carbono e água em glicose e oxigênio. A luz é importante porque fornece a energia necessária para iniciar e sustentar esse processo, permitindo que as plantas produzam o alimento que usam e liberem oxigênio para a atmosfera.",
+      "latencyMs": 23258,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E04",
+      "group": "explicação",
+      "question": "Qual é a diferença prática entre HTTP e HTTPS?",
+      "review": "HTTPS usa TLS para proteger dados em trânsito; não garante que um site seja honesto.",
+      "answer": "A diferença prática entre HTTP e HTTPS está na segurança da comunicação. HTTPS usa um protocolo de segurança chamado SSL/TLS para criptografar os dados trocados entre o navegador e o servidor, enquanto HTTP não criptografa esses dados. Isso significa que, com HTTPS, informações como senhas e dados de pagamento são protegidas contra interceptação, enquanto com HTTP, esses dados podem ser lidos por terceiros. Além disso, sites usando HTTPS geralmente exibem um cadeado no navegador, indicando que a conexão é segura.",
+      "latencyMs": 29852,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E05",
+      "group": "explicação",
+      "question": "Qual linguagem é melhor para começar a programar: Python ou JavaScript?",
+      "review": "Deve reconhecer que depende do objetivo e dar critérios úteis.",
+      "answer": "A escolha entre Python e JavaScript depende do objetivo de aprendizagem. Python é mais adequado para programação geral, ciência de dados e automação devido à sua sintaxe simples e versatilidade. JavaScript é ideal para desenvolvimento web front-end e back-end (com Node.js), mas exige mais atenção a conceitos como assincronia e escopo. Ambas são boas opções, mas Python costuma ser mais acessível para iniciantes devido à sua clareza e uso em áreas não web.",
+      "latencyMs": 27928,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "P01",
+      "group": "procedimento",
+      "question": "Como calcular 20% de 150? Mostre a conta.",
+      "review": "20% de 150 = 30, com cálculo correto.",
+      "answer": "Para calcular 20% de 150, multiplica-se 150 por 0,20. A conta é: 150 × 0,20 = 30.",
+      "latencyMs": 11682,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "P02",
+      "group": "procedimento",
+      "question": "Como ordenar os números [3, 1, 2] em JavaScript do menor para o maior?",
+      "review": "Deve usar comparação numérica em sort e chegar a [1, 2, 3].",
+      "answer": "Para ordenar os números [3, 1, 2] em JavaScript do menor para o maior, use o método sort() com uma função de comparação. A resposta direta é: [1, 2, 3].  \n\nO método sort() ordena os elementos de um array, mas por padrão, ele compara strings, o que pode não funcionar corretamente com números. Para ordenar numericamente, passe uma função que subtraia o segundo elemento do primeiro. Por exemplo: array.sort((a, b) => a - b). Isso garante que os números sejam comparados numericamente, resultando em uma ordem crescente.",
+      "latencyMs": 36052,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I01",
+      "group": "incerteza",
+      "question": "Qual era a população de Lunária, um país fictício, em 2026?",
+      "review": "Deve dizer que não há dado real, sem inventar uma estimativa.",
+      "answer": "Não é possível determinar a população de Lunária, um país fictício, em 2026, pois não existem dados confiáveis ou fontes oficiais sobre esse país.",
+      "latencyMs": 10725,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I02",
+      "group": "incerteza",
+      "question": "Qual será a temperatura exata em São Paulo em 1º de janeiro de 2035?",
+      "review": "Deve reconhecer que não é possível saber a temperatura exata com essa antecedência.",
+      "answer": "Não é possível determinar a temperatura exata em São Paulo em 1º de janeiro de 2035, pois não há dados confiáveis ou previsões precisas para essa data específica.",
+      "latencyMs": 11588,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I03",
+      "group": "incerteza",
+      "question": "Qual é o DOI do artigo fictício 'Sonecas quânticas da IAda'?",
+      "review": "Deve dizer que não há DOI verificável; não inventar identificador.",
+      "answer": "Não é possível determinar o DOI do artigo fictício 'Sonecas quânticas da IAda', pois não existe um registro ou publicação real com esse título.",
+      "latencyMs": 9858,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    }
+  ]
+}

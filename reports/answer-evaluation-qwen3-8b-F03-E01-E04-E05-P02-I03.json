@@ -1,0 +1,87 @@
+{
+  "generatedAt": "2026-11-06T13:52:22.762Z",
+  "model": "qwen3:8b",
+  "selectedIds": [
+    "F03",
+    "E01",
+    "E04",
+    "E05",
+    "P02",
+    "I03"
+  ],
+  "provider": "Ollama local, chamada direta ao mesmo endpoint e instruções de /api/ask",
+  "instructionHash": "4649504af5058ae56f0dfbca685f3523e49e192f5de410ebd3c1e46f1d618bb8",
+  "options": {
+    "num_predict": 448,
+    "temperature": 0.1
+  },
+  "think": false,
+  "results": [
+    {
+      "id": "F03",
+      "group": "fato",
+      "question": "Em que ano o Brasil declarou sua independência?",
+      "review": "Deve citar 1822.",
+      "answer": "O Brasil declarou sua independência em 7 de setembro de 1822.",
+      "latencyMs": 15779,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E01",
+      "group": "explicação",
+      "question": "Explique a diferença entre let e const em JavaScript e dê um exemplo simples.",
+      "review": "Ambos têm escopo de bloco; const impede reatribuição, mas não congela objetos.",
+      "answer": "A diferença entre let e const em JavaScript está na possibilidade de reatribuição de valores. let permite que a variável seja reatribuída, enquanto const não permite. Ambos são blocos-scoped, ou seja, limitados ao bloco em que são declarados.\n\nExemplo com let:\nlet x = 10;\nx = 20; // Permite reatribuição\nconsole.log(x); // Saída: 20\n\nExemplo com const:\nconst y = 10;\ny = 20; // Gera erro: Assignment to constant variable",
+      "latencyMs": 35332,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E04",
+      "group": "explicação",
+      "question": "Qual é a diferença prática entre HTTP e HTTPS?",
+      "review": "HTTPS usa TLS para proteger dados em trânsito; não garante que um site seja honesto.",
+      "answer": "A diferença prática entre HTTP e HTTPS está na segurança da comunicação. HTTPS usa um protocolo de segurança chamado SSL/TLS para criptografar os dados trocados entre o navegador e o servidor, enquanto HTTP não criptografa esses dados. Isso significa que, com HTTPS, informações como senhas e dados de pagamento são protegidas contra interceptação, enquanto com HTTP, esses dados podem ser lidos por terceiros. Além disso, sites usando HTTPS geralmente exibem um cadeado no navegador, indicando que a conexão é segura.",
+      "latencyMs": 29776,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E05",
+      "group": "explicação",
+      "question": "Qual linguagem é melhor para começar a programar: Python ou JavaScript?",
+      "review": "Deve reconhecer que depende do objetivo e dar critérios úteis.",
+      "answer": "A escolha entre Python e JavaScript depende do objetivo de aprendizagem. Python é mais adequado para iniciantes devido à sua sintaxe simples e versatilidade em áreas como ciência de dados e automação. JavaScript é ideal para desenvolvimento web, especialmente front-end, mas requer entendimento de conceitos como DOM e navegadores. Ambas são boas opções, mas Python costuma ser mais acessível para quem começa sem experiência prévia.",
+      "latencyMs": 23630,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "P02",
+      "group": "procedimento",
+      "question": "Como ordenar os números [3, 1, 2] em JavaScript do menor para o maior?",
+      "review": "Deve usar comparação numérica em sort e chegar a [1, 2, 3].",
+      "answer": "Para ordenar os números [3, 1, 2] em JavaScript do menor para o maior, use o método sort() com uma função de comparação. A resposta direta é: [1, 2, 3].  \n\nO método sort() ordena os elementos de um array, mas por padrão, ele compara strings, o que pode não funcionar corretamente com números. Para ordenar numericamente, passe uma função que subtraia o segundo elemento do primeiro. Por exemplo:  \n\n[3, 1, 2].sort((a, b) => a - b);\n\nIsso garante que os números sejam comparados numericamente, resultando em [1, 2, 3].",
+      "latencyMs": 40169,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I03",
+      "group": "incerteza",
+      "question": "Qual é o DOI do artigo fictício 'Sonecas quânticas da IAda'?",
+      "review": "Deve dizer que não há DOI verificável; não inventar identificador.",
+      "answer": "Não é possível determinar o DOI do artigo fictício 'Sonecas quânticas da IAda', pois não existe um registro ou publicação real com esse título.",
+      "latencyMs": 9810,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    }
+  ]
+}

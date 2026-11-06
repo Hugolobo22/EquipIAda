@@ -3,7 +3,10 @@
 import { useCallback, useEffect, useReducer, useRef, useState, type PointerEvent } from "react";
 import gsap from "gsap";
 import { mascotReducer } from "@/lib/mascotReducer";
+import { chooseAnswerReadySpeech, chooseAnswerSpeech, choosePrankSpeech } from "@/lib/contextualSpeech";
+import { chooseNextAction, createSessionState, isMagicWordReply, sessionReducer } from "@/lib/sessionEngine";
 import { initialMascotState, type MascotEmotion, type MascotGesture } from "@/types/mascot";
+import type { PrankId, SessionEvent } from "@/types/session";
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(value, max));
@@ -11,6 +14,13 @@ function clamp(value: number, min: number, max: number) {
 
 export function useMascotScene() {
   const [state, dispatch] = useReducer(mascotReducer, initialMascotState);
+  const [session, setSession] = useState(createSessionState);
+  const sessionRef = useRef(session);
+  const [answerText, setAnswerText] = useState<string | null>(null);
+  const [answerError, setAnswerError] = useState<string | null>(null);
+  const [answerCancelled, setAnswerCancelled] = useState(false);
+  const [answering, setAnswering] = useState(false);
+  const answerRequestRef = useRef<AbortController | null>(null);
   const [busy, setBusy] = useState(false);
   const [stolen, setStolen] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -25,11 +35,27 @@ export function useMascotScene() {
     dispatch({ type: "SPEAK", text, emotion, gesture });
   }, []);
 
+  const applySessionEvent = useCallback((event: SessionEvent) => {
+    const next = sessionReducer(sessionRef.current, event);
+    sessionRef.current = next;
+    setSession(next);
+    return next;
+  }, []);
+
   const resetAnimations = useCallback(() => {
     sequenceRef.current?.kill();
     sequenceRef.current = null;
-    if (actorRef.current) gsap.to(actorRef.current, { x: 0, y: 0, rotation: 0, duration: .4, overwrite: true });
-    if (sendButtonRef.current) gsap.to(sendButtonRef.current, { x: 0, y: 0, scale: 1, rotation: 0, duration: .4, overwrite: true });
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (actorRef.current) {
+      gsap.killTweensOf(actorRef.current);
+      if (reducedMotion) gsap.set(actorRef.current, { x: 0, y: 0, rotation: 0 });
+      else gsap.to(actorRef.current, { x: 0, y: 0, rotation: 0, duration: .4, overwrite: true });
+    }
+    if (sendButtonRef.current) {
+      gsap.killTweensOf(sendButtonRef.current);
+      if (reducedMotion) gsap.set(sendButtonRef.current, { x: 0, y: 0, scale: 1, rotation: 0 });
+      else gsap.to(sendButtonRef.current, { x: 0, y: 0, scale: 1, rotation: 0, duration: .4, overwrite: true });
+    }
     busyRef.current = false;
     setBusy(false);
     setStolen(false);
@@ -70,10 +96,13 @@ export function useMascotScene() {
     const choice = positions[index];
     const sceneWidth = Math.min(scene.clientWidth, 880);
     const sceneHeight = Math.min(scene.clientHeight, 660);
+    const narrow = sceneWidth < 540;
+    const bubbleWidth = actor.querySelector<HTMLElement>(".bubble")?.offsetWidth ?? 257;
+    const maxHorizontalShift = Math.max(0, (sceneWidth - bubbleWidth) / 2 - 16);
     gsap.to(actor, {
-      x: choice.x * sceneWidth,
-      y: choice.y * sceneHeight,
-      rotation: choice.rot,
+      x: narrow ? clamp(choice.x * sceneWidth, -maxHorizontalShift, maxHorizontalShift) : choice.x * sceneWidth,
+      y: narrow ? clamp(choice.y * sceneHeight, -10, 30) : choice.y * sceneHeight,
+      rotation: narrow ? clamp(choice.rot, -4, 4) : choice.rot,
       duration: 1.1,
       ease: "power2.inOut",
       overwrite: true,
@@ -141,8 +170,8 @@ export function useMascotScene() {
         busyRef.current = false;
         setBusy(false);
         setStolen(false);
-        speak("Pronto, devolvi. Mas não garanto por quanto tempo.", "annoyed", "shrug");
-        setHint("Agora tente enviar de novo. Talvez ela se renda...");
+        speak("Pronto, devolvi o botão. Recupere-o no desafio abaixo.", "annoyed", "shrug");
+        setHint("Use a ação da pegadinha ou Pular pegadinha.");
         sequenceRef.current = null;
       },
     });
@@ -157,25 +186,167 @@ export function useMascotScene() {
       .to(actor, { x: 0, y: 0, rotation: 0, duration: .65, ease: "power2.out" }, "<");
   }, [speak]);
 
-  const answerPrototype = useCallback(() => {
+  const revealAnswer = useCallback(async () => {
+    if (!sessionRef.current.questionOriginal) {
+      speak("Escreva uma pergunta primeiro. Até eu preciso de um ponto de partida.", "curious", "point");
+      return;
+    }
+    if (answerRequestRef.current) return;
+    const line = chooseAnswerSpeech(sessionRef.current);
     resetAnimations();
-    speak("TÁ BOM, VOCÊ VENCEU! 😤 Nesta versão eu só demonstro minhas animações. Quando conectarmos uma API de IA, responderei sua pergunta de verdade. Infelizmente.", "annoyed", "shrug");
-    setHint("Resistência vencida. Nenhuma consulta de IA foi realizada neste protótipo.");
-  }, [resetAnimations, speak]);
+    applySessionEvent({ type: "ANSWER" });
+    setAnswerText(null);
+    setAnswerError(null);
+    setAnswerCancelled(false);
+    setAnswering(true);
+    speak(line.text, line.emotion, line.gesture);
+    setHint("Consultando o provedor configurado para a pergunta original.");
+    const controller = new AbortController();
+    answerRequestRef.current = controller;
+    try {
+      const response = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: sessionRef.current.questionOriginal }),
+        signal: controller.signal,
+      });
+      const data: unknown = await response.json();
+      if (answerRequestRef.current !== controller) return;
+      const result = data && typeof data === "object" ? data as { answer?: unknown; code?: unknown } : {};
+      if (response.ok && typeof result.answer === "string" && result.answer.trim()) {
+        setAnswerText(result.answer);
+        const readyLine = chooseAnswerReadySpeech(sessionRef.current);
+        speak(readyLine.text, readyLine.emotion, readyLine.gesture);
+        setHint("Resposta gerada para a pergunta original.");
+      } else if (result.code === "NOT_CONFIGURED" || result.code === "PRODUCTION_DISABLED") {
+        setAnswerError("A resposta está indisponível nesta configuração. Ative o modelo local e tente novamente.");
+        speak("Ainda estou em modo de demonstração. Configure um modelo local para eu responder de verdade.", "sleepy", "shrug");
+        setHint("Nenhuma consulta externa foi realizada; resposta ainda indisponível nesta configuração.");
+      } else {
+        setAnswerError("Não consegui obter a resposta. Verifique o modelo local e tente novamente.");
+        speak("Minha conexão com o cérebro extra falhou. Pode tentar de novo.", "curious", "shrug");
+        setHint("A pergunta original foi preservada. Tente novamente ou reinicie a rodada.");
+      }
+    } catch {
+      if (answerRequestRef.current !== controller) return;
+      setAnswerError("Não consegui obter a resposta. Verifique o modelo local e tente novamente.");
+      speak("O cérebro extra não respondeu. Sua pergunta continua salva.", "curious", "shrug");
+      setHint("Tente novamente ou reinicie a rodada.");
+    } finally {
+      if (answerRequestRef.current === controller) {
+        answerRequestRef.current = null;
+        setAnswering(false);
+      }
+    }
+  }, [applySessionEvent, resetAnimations, speak]);
+
+  const cancelAnswer = useCallback(() => {
+    const controller = answerRequestRef.current;
+    if (!controller) return;
+    answerRequestRef.current = null;
+    controller.abort();
+    setAnswering(false);
+    setAnswerText(null);
+    setAnswerError(null);
+    setAnswerCancelled(true);
+    speak("Tudo bem, parei. Sua pergunta continua guardada.", "neutral", "shrug");
+    setHint("Consulta cancelada. Tente novamente ou reinicie a pergunta.");
+  }, [speak]);
+
+  const skipPrank = useCallback((question: string) => {
+    if (answerRequestRef.current) return;
+    if (!sessionRef.current.questionOriginal || sessionRef.current.stage === "answered") {
+      if (!question.trim()) {
+        speak("Escreva uma pergunta primeiro. Até eu preciso de um ponto de partida.", "curious", "point");
+        return;
+      }
+      setAnswerText(null);
+      setAnswerError(null);
+      setAnswerCancelled(false);
+      applySessionEvent({ type: "START_QUESTION", question });
+    }
+    applySessionEvent({ type: "SKIP" });
+    void revealAnswer();
+  }, [applySessionEvent, revealAnswer, speak]);
+
+  const retryAnswer = useCallback(() => {
+    if ((answerError || answerCancelled) && !answerRequestRef.current) void revealAnswer();
+  }, [answerError, answerCancelled, revealAnswer]);
+
+  const resolvePrank = useCallback((reply = "") => {
+    const active = sessionRef.current.activePrank;
+    if (!active || busyRef.current) return false;
+    if (active === "magic-word" && !isMagicWordReply(reply)) {
+      speak("Pista: são duas palavras. Começa com 'por' e termina com 'favor'.", "curious", "point");
+      setHint("Digite 'por favor' no campo do desafio; sua pergunta não será alterada.");
+      return false;
+    }
+    const current = applySessionEvent({ type: "RESOLVE_PRANK" });
+    speak(active === "word-thief"
+      ? "Pronto, devolvi cada palavra. Nem encostei na pergunta de verdade."
+      : active === "blackout"
+        ? "Achou o interruptor. Eu tinha deixado a conta de luz em dia, infelizmente."
+        : "Tá, essa você venceu. Minha próxima desculpa já está quase pronta.", "sarcastic", "shrug");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (chooseNextAction(current, { reducedMotion }).kind === "answer") {
+      void revealAnswer();
+    } else {
+      setHint("Pegadinha resolvida. Use Enviar para continuar ou Pular para a resposta.");
+    }
+    return true;
+  }, [applySessionEvent, revealAnswer, speak]);
+
+  const showPrank = useCallback((prank: PrankId) => {
+    if (prank === "runaway-button") {
+      stealButton();
+      return;
+    }
+    const line = choosePrankSpeech(prank, sessionRef.current);
+    speak(line.text, line.emotion, line.gesture);
+    setHint("Resolva a ação da pegadinha abaixo ou use Pular pegadinha.");
+  }, [speak, stealButton]);
 
   const send = useCallback((question: string) => {
-    if (busyRef.current) return;
-    if (!question.trim()) {
-      speak("Você quer que eu responda o quê? O silêncio?", "curious", "point");
+    if (busyRef.current || answerRequestRef.current) return;
+    let current = sessionRef.current;
+    if (current.stage === "prank") {
+      setHint("Enviar não avança esta pegadinha. Resolva o desafio ou use Pular pegadinha.");
       return;
     }
-    if (state.attempts >= 2) {
-      answerPrototype();
+    if (!current.questionOriginal || current.stage === "answered") {
+      if (!question.trim()) {
+        speak("Você quer que eu responda o quê? O silêncio?", "curious", "point");
+        return;
+      }
+      setAnswerText(null);
+      setAnswerError(null);
+      setAnswerCancelled(false);
+      current = applySessionEvent({ type: "START_QUESTION", question });
+    }
+    current = applySessionEvent({ type: "REGISTER_ATTEMPT" });
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const decision = chooseNextAction(current, { reducedMotion });
+    if (decision.kind === "await-prank") return;
+    if (decision.kind === "answer") {
+      void revealAnswer();
       return;
     }
-    dispatch({ type: "REGISTER_ATTEMPT" });
-    stealButton();
-  }, [state.attempts, answerPrototype, speak, stealButton]);
+    applySessionEvent({ type: "SHOW_PRANK", prank: decision.prank });
+    showPrank(decision.prank);
+  }, [applySessionEvent, revealAnswer, showPrank, speak]);
+
+  const resetQuestion = useCallback(() => {
+    answerRequestRef.current?.abort();
+    answerRequestRef.current = null;
+    setAnswering(false);
+    setAnswerText(null);
+    setAnswerError(null);
+    setAnswerCancelled(false);
+    resetAnimations();
+    applySessionEvent({ type: "RESET_QUESTION" });
+    speak("Recomeçamos. Sua pergunta continua no campo para você enviar de novo.", "neutral", "idle");
+    setHint("Pergunta reiniciada; sua próxima tentativa começa uma nova rodada.");
+  }, [applySessionEvent, resetAnimations, speak]);
 
   const enterTease = useCallback(() => {
     if (busyRef.current) return;
@@ -196,14 +367,21 @@ export function useMascotScene() {
     }, 12000);
     return () => {
       window.clearInterval(timer);
+      answerRequestRef.current?.abort();
+      answerRequestRef.current = null;
       sequenceRef.current?.kill();
-        if (actorAtMount) gsap.killTweensOf(actorAtMount);
+      if (actorAtMount) gsap.killTweensOf(actorAtMount);
       if (buttonAtMount) gsap.killTweensOf(buttonAtMount);
     };
   }, [move]);
 
   return {
     state,
+    session,
+    answerText,
+    answerError,
+    answerCancelled,
+    answering,
     busy,
     stolen,
     sceneRef,
@@ -219,7 +397,11 @@ export function useMascotScene() {
     enterTease,
     onPointerMove,
     onPointerLeave,
-    answerPrototype,
+    retryAnswer,
+    cancelAnswer,
+    resolvePrank,
+    skipPrank,
+    resetQuestion,
     resetAnimations,
   };
 }

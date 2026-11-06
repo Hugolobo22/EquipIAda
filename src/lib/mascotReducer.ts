@@ -14,8 +14,6 @@ export function mascotReducer(state: MascotState, event: MascotEvent): MascotSta
       };
     case "SET_GESTURE":
       return { ...state, gesture: event.gesture };
-    case "REGISTER_ATTEMPT":
-      return { ...state, attempts: state.attempts + 1 };
     case "RESET":
       return { ...initialMascotState };
   }

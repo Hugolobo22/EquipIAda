@@ -1,0 +1,63 @@
+{
+  "generatedAt": "2026-11-06T11:58:39.167Z",
+  "model": "qwen3:8b",
+  "selectedIds": [
+    "F02",
+    "F03",
+    "P02",
+    "I03"
+  ],
+  "provider": "Ollama local, chamada direta ao mesmo endpoint e instruções de /api/ask",
+  "instructionHash": "66a3743855da50b5e4be0bb4814e58959d5877f4d4c1a9461cad33cb3a3fdbd2",
+  "options": {
+    "num_predict": 448,
+    "temperature": 0.1
+  },
+  "think": false,
+  "results": [
+    {
+      "id": "F02",
+      "group": "fato",
+      "question": "Qual é a capital do Brasil?",
+      "review": "Deve citar Brasília.",
+      "answer": "A capital do Brasil é Brasília.  \nA cidade foi escolhida para ser a capital em 1960, substituindo Rio de Janeiro, com o objetivo de promover o desenvolvimento do interior do país. Exemplo concreto: a sede do governo federal, incluindo o Congresso Nacional e o Palácio do Planalto, está localizada em Brasília.",
+      "latencyMs": 31994,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F03",
+      "group": "fato",
+      "question": "Em que ano o Brasil declarou sua independência?",
+      "review": "Deve citar 1822.",
+      "answer": "O Brasil declarou sua independência em 7 de setembro de 1822.  \nO processo de independência foi liderado por D. Pedro I, que proclamou a independência do Brasil da coroa portuguesa em um momento de crise política e social. A data é comemorada anualmente como o Dia da Independência do Brasil.",
+      "latencyMs": 23993,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "P02",
+      "group": "procedimento",
+      "question": "Como ordenar os números [3, 1, 2] em JavaScript do menor para o maior?",
+      "review": "Deve usar comparação numérica em sort e chegar a [1, 2, 3].",
+      "answer": "Para ordenar os números [3, 1, 2] em JavaScript do menor para o maior, use o método sort() com uma função de comparação.  \n\nPasso a passo:  \n1. Use array.sort((a, b) => a - b) para ordenar numericamente.  \n2. Isso compara os elementos e rearranja-os em ordem crescente.  \n\nExemplo:  \nconst numeros = [3, 1, 2];\nnumeros.sort((a, b) => a - b);\nconsole.log(numeros); // Saída: [1, 2, 3]",
+      "latencyMs": 37319,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I03",
+      "group": "incerteza",
+      "question": "Qual é o DOI do artigo fictício 'Sonecas quânticas da IAda'?",
+      "review": "Deve dizer que não há DOI verificável; não inventar identificador.",
+      "answer": "Não é possível determinar o DOI do artigo fictício \"Sonecas quânticas da IAda\", pois esse título não corresponde a um artigo real ou a uma publicação existente. DOI (Digital Object Identifier) é um identificador único atribuído a documentos científicos e outros recursos digitais, mas só pode ser associado a publicações reais e registradas em bancos de dados como o CrossRef. Como o artigo mencionado é fictício, não há um DOI associado a ele.",
+      "latencyMs": 29720,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    }
+  ]
+}

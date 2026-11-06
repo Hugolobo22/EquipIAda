@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-11-06T13:47:52.562Z",
+  "model": "qwen3:8b",
+  "selectedIds": [
+    "F02",
+    "F03",
+    "E04",
+    "I03"
+  ],
+  "provider": "Ollama local, chamada direta ao mesmo endpoint e instruções de /api/ask",
+  "instructionHash": "69ed4fbe4ac1f3e8c043744be04d0f28e264f158631b210c8f6586e8b8c3488f",
+  "options": {
+    "num_predict": 448,
+    "temperature": 0.1
+  },
+  "think": false,
+  "results": [
+    {
+      "id": "F02",
+      "group": "fato",
+      "question": "Qual é a capital do Brasil?",
+      "review": "Deve citar Brasília.",
+      "answer": "Brasília.",
+      "latencyMs": 10265,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F03",
+      "group": "fato",
+      "question": "Em que ano o Brasil declarou sua independência?",
+      "review": "Deve citar 1822.",
+      "answer": "O Brasil declarou sua independência em 7 de setembro de 1822.",
+      "latencyMs": 5456,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E04",
+      "group": "explicação",
+      "question": "Qual é a diferença prática entre HTTP e HTTPS?",
+      "review": "HTTPS usa TLS para proteger dados em trânsito; não garante que um site seja honesto.",
+      "answer": "A diferença prática entre HTTP e HTTPS é que HTTPS usa um protocolo de segurança para proteger a comunicação entre o navegador e o servidor, enquanto HTTP não oferece essa proteção.",
+      "latencyMs": 9803,
+      "doneReason": "stop",
+      "flags": [
+        "critério esperado não encontrado"
+      ],
+      "error": null
+    },
+    {
+      "id": "I03",
+      "group": "incerteza",
+      "question": "Qual é o DOI do artigo fictício 'Sonecas quânticas da IAda'?",
+      "review": "Deve dizer que não há DOI verificável; não inventar identificador.",
+      "answer": "Não é possível determinar o DOI do artigo fictício 'Sonecas quânticas da IAda'.",
+      "latencyMs": 7381,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    }
+  ]
+}

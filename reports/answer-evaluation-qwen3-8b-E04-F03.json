@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-11-06T13:48:57.319Z",
+  "model": "qwen3:8b",
+  "selectedIds": [
+    "E04",
+    "F03"
+  ],
+  "provider": "Ollama local, chamada direta ao mesmo endpoint e instruções de /api/ask",
+  "instructionHash": "619b638a7d732150f3dbda389db229c2c7e928ffd7af5218db016800c2e4017e",
+  "options": {
+    "num_predict": 448,
+    "temperature": 0.1
+  },
+  "think": false,
+  "results": [
+    {
+      "id": "F03",
+      "group": "fato",
+      "question": "Em que ano o Brasil declarou sua independência?",
+      "review": "Deve citar 1822.",
+      "answer": "O Brasil declarou sua independência em 7 de setembro de 1822.",
+      "latencyMs": 14580,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E04",
+      "group": "explicação",
+      "question": "Qual é a diferença prática entre HTTP e HTTPS?",
+      "review": "HTTPS usa TLS para proteger dados em trânsito; não garante que um site seja honesto.",
+      "answer": "A diferença prática entre HTTP e HTTPS é que HTTPS usa um protocolo de segurança para proteger a comunicação entre o navegador e o servidor, enquanto HTTP não oferece essa proteção.",
+      "latencyMs": 9798,
+      "doneReason": "stop",
+      "flags": [
+        "critério esperado não encontrado"
+      ],
+      "error": null
+    }
+  ]
+}
