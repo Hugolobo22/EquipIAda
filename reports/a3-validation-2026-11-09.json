@@ -1,0 +1,93 @@
+{
+  "date": "2026-11-09",
+  "scope": "Primeira fatia de adequação A3: banco SQLite integrado, requisitos, matriz acadêmica e documentação de testes. Não representa conclusão de todas as exigências da banca.",
+  "requirementsSource": {
+    "file": "REGRAS E CRITÉRIOS DO PROJETO A3 - UC GESTÃO E QUALIDADE DE SOFTWARE .pdf",
+    "sha256": "1D0663C938647F4A218D11CA5DE09F9B1986F743326378917694A9D670AA6DCB",
+    "pagesRead": 11,
+    "deliveryDateAsWritten": "27/11",
+    "eligibilityListAsWritten": "30/11"
+  },
+  "implementation": {
+    "database": "SQLite em arquivo com node:sqlite",
+    "nodeVersionTested": "24.22.1",
+    "minimumNodeVersion": "22.13.0",
+    "sqliteVersionTested": "3.53.4",
+    "schema": "database/migrations/001_feedback.sql",
+    "tables": ["feedback", "feedback_prank"],
+    "savedOnlyAfterConfirmation": true,
+    "promptsOrAnswersStored": false,
+    "realDatabaseVersioned": false,
+    "schemaVersion": 1,
+    "schemaPreparedForGit": true,
+    "schemaCommitted": false
+  },
+  "validation": {
+    "rulesValidationDiagnosticsAndSqlite": { "passed": 38, "failed": 0, "realSqliteIntegrationCases": 4 },
+    "browser": {
+      "casesPassed": 16,
+      "failed": 0,
+      "executions": [
+        { "cases": 15, "realOllamaCases": 1, "durationSeconds": 58.4 },
+        { "cases": 1, "description": "Novo caso de formulário em 320 px por teclado", "durationSeconds": 6.2 }
+      ],
+      "testPort": 3100,
+      "isolatedDatabase": true,
+      "productionFeedbackUsedAsFixtures": false
+    },
+    "finalFocusedFeedbackTests": { "passed": 6, "failed": 0 },
+    "databaseInitialization": "Aprovada; banco principal vazio, sem avaliações sintéticas de colegas.",
+    "typecheck": "aprovado",
+    "lint": "aprovado após excluir artefatos gerados dos testes",
+    "build": "aprovado; migração incluída no rastreamento e nenhum arquivo SQLite de execução incluído",
+    "paidCallsEnabled": false
+  },
+  "repository": {
+    "url": "https://github.com/Hugolobo22/EquipIAda",
+    "visibilityVerified": "public",
+    "visibilityChanged": false,
+    "currentChangesPushed": false
+  },
+  "pending": [
+    "Confirmar composição de quatro integrantes, pois o documento menciona cinco.",
+    "Instalar em outro computador seguindo somente o README da versão entregue.",
+    "Revisar, criar commits e enviar as alterações ao GitHub antes do prazo.",
+    "Confirmar UC HUB, formulário e horário da banca com a equipe/professor.",
+    "Ensaiar apresentação e arguição individual; não foram atribuídas contribuições fictícias.",
+    "Toque físico, leitor de tela e testes com colegas continuam pendentes.",
+    "Ollama continua sujeito aos erros factuais documentados na avaliação anterior."
+  ],
+  "changedInThisIncrement": [
+    "src/lib/feedback.ts",
+    "src/server/feedbackRepository.ts",
+    "src/app/api/feedback/route.ts",
+    "src/components/FeedbackPanel.tsx",
+    "src/components/Scene.tsx",
+    "src/app/globals.css",
+    "database/migrations/001_feedback.sql",
+    "scripts/database.mjs",
+    "scripts/startLocal.mjs",
+    "tests/feedback.test.mjs",
+    "tests/feedbackRepository.test.mjs",
+    "tests/browser/feedback.spec.ts",
+    "playwright.config.ts",
+    "next.config.ts",
+    "eslint.config.mjs",
+    "tsconfig.json",
+    "package.json",
+    "package-lock.json",
+    ".env.example",
+    ".gitignore",
+    "AGENTS.md",
+    "README.md",
+    "docs/A3_COMPLIANCE.md",
+    "docs/REQUIREMENTS.md",
+    "docs/DATABASE.md",
+    "docs/TESTING.md",
+    "docs/PRODUCT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/ROADMAP.md",
+    "docs/CODEX_START.md",
+    "docs/DEMO_RUNBOOK.md"
+  ]
+}

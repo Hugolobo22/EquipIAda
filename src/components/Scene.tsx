@@ -7,7 +7,9 @@ import {
   Flashlight, Lightbulb, MoveUpRight, RotateCcw, Send, Sparkles, WandSparkles,
 } from "lucide-react";
 import { Mascot } from "@/components/Mascot";
-import { MAX_PRANKS } from "@/lib/sessionEngine";
+import { FeedbackPanel } from "@/components/FeedbackPanel";
+import { DramaticTask, MaintenanceTask } from "@/components/PrankTasks";
+import { isQuestionLocked } from "@/lib/sessionEngine";
 import { createWordTheftPreview } from "@/lib/wordTheft";
 import { EMOTIONS, type MascotEmotion } from "@/types/mascot";
 import type { PrankId } from "@/types/session";
@@ -25,8 +27,8 @@ const prankChallenges: Record<PrankId, { instruction: string; action: string }> 
   "magic-word": { instruction: "Digite a expressão de duas palavras que a IAda pediu. Sua pergunta original fica intacta.", action: "Dizer a palavra mágica" },
   "word-thief": { instruction: "A IAda escondeu duas palavras em bolsos diferentes. Recupere cada uma; a pergunta original está segura.", action: "Devolver palavras" },
   blackout: { instruction: "Acenda a lanterna no palco e encontre o interruptor. Use Tab e Enter se preferir; Pular segue disponível.", action: "Restaurar a luz" },
-  "dramatic-delay": { instruction: "O drama já passou. Chame a IAda de volta para continuar.", action: "Chega de drama" },
-  maintenance: { instruction: "A manutenção era uma desculpa. Peça para ela encerrar a pausa.", action: "Encerrar a pausa" },
+  "dramatic-delay": { instruction: "Carregue a coragem imaginária da IAda com dois empurrões. Isso não é o progresso da resposta real.", action: "Carregar coragem" },
+  maintenance: { instruction: "A manutenção é uma desculpa. Desligue a soneca e conecte a boa vontade no painel abaixo.", action: "Concluir manutenção" },
 };
 
 function BlackoutChallenge({ onRestore }: { onRestore: () => void }) {
@@ -55,18 +57,21 @@ function BlackoutChallenge({ onRestore }: { onRestore: () => void }) {
 }
 
 export function Scene() {
-  const { state, session, answerText, answerError, answerCancelled, answering, busy, stolen, sceneRef, actorRef, sendButtonRef, hint, speak, send, setEmotion, move, wave, enterTease, onPointerMove, onPointerLeave, skipPrank, resolvePrank, retryAnswer, cancelAnswer, resetQuestion } = useMascotScene();
+  const { state, session, answerText, answerError, answerCancelled, answering, busy, stolen, transitioning, sceneRef, actorRef, sendButtonRef, hint, speak, send, setEmotion, move, wave, enterTease, onPointerMove, onPointerLeave, skipPrank, resolvePrank, retryAnswer, cancelAnswer, resetQuestion } = useMascotScene();
   const [question, setQuestion] = useState("Como funciona o JavaScript?");
   const [prankReply, setPrankReply] = useState("");
   const [restoredWords, setRestoredWords] = useState<number[]>([]);
   const [aboutOpen, setAboutOpen] = useState(false);
   const answerPanelRef = useRef<HTMLElement>(null);
+  const transitionPanelRef = useRef<HTMLDivElement>(null);
   const prankPanelRef = useRef<HTMLElement>(null);
   const prankInputRef = useRef<HTMLInputElement>(null);
+  const questionInputRef = useRef<HTMLTextAreaElement>(null);
   const wordReturnButtonsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const previousStageRef = useRef(session.stage);
   const wordTheftActive = session.stage === "prank" && session.activePrank === "word-thief";
   const blackoutActive = session.stage === "prank" && session.activePrank === "blackout";
+  const controlsBusy = busy || isQuestionLocked(session);
   const maskedQuestion = wordTheftActive && session.questionOriginal
     ? createWordTheftPreview(session.questionOriginal, restoredWords)
     : null;
@@ -76,14 +81,22 @@ export function Scene() {
   }, [answering, answerText, answerError, answerCancelled]);
 
   useEffect(() => {
+    if (transitioning) transitionPanelRef.current?.focus();
+  }, [transitioning]);
+
+  useEffect(() => {
+    if (session.questionOriginal && questionInputRef.current) questionInputRef.current.scrollTop = 0;
+  }, [session.questionOriginal]);
+
+  useEffect(() => {
     if (session.stage === "prank") {
       if (session.activePrank === "magic-word") prankInputRef.current?.focus();
       else if (session.activePrank !== "blackout") prankPanelRef.current?.focus();
-    } else if (previousStageRef.current === "prank" && session.stage === "idle") {
+    } else if (previousStageRef.current === "prank" && session.stage === "idle" && !transitioning) {
       sendButtonRef.current?.focus();
     }
     previousStageRef.current = session.stage;
-  }, [session.stage, session.activePrank, sendButtonRef]);
+  }, [session.stage, session.activePrank, sendButtonRef, transitioning]);
 
   useEffect(() => {
     if (wordTheftActive && restoredWords.length === 1) {
@@ -108,20 +121,23 @@ export function Scene() {
   }
 
   function onSkipPrank() {
+    setPrankReply("");
     setRestoredWords([]);
     skipPrank(question);
   }
 
   function onResetQuestion() {
+    setPrankReply("");
     setRestoredWords([]);
     resetQuestion();
+    questionInputRef.current?.focus();
   }
 
   function onInputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
       event.preventDefault();
       send(question);
-    } else if (event.key === "Enter" && !event.shiftKey) {
+    } else if (event.key === "Enter" && !event.shiftKey && !isQuestionLocked(session)) {
       // Enter mantém comportamento de textarea (quebra de linha).
       enterTease();
     }
@@ -161,10 +177,10 @@ export function Scene() {
         <div className="workspace" id="laboratorio">
           <section className="stage-frame" aria-label="Palco interativo da IAda">
             <div className="stage-top">
-              <div className="stage-pills"><span className="purple-pill"><span className="purple-pulse"/> {stolen ? "BOTÃO SEQUESTRADO" : "EXPERIÊNCIA AO VIVO"}</span><span className="stage-meta">CENA 01 / A IA QUE NÃO QUER TRABALHAR</span></div>
+              <div className="stage-pills"><span className="purple-pill"><span className="purple-pulse"/> {stolen ? "BOTÃO SEQUESTRADO" : session.activePrank === "maintenance" ? "EM MANUTENÇÃO" : session.activePrank === "dramatic-delay" ? "CARREGANDO CORAGEM" : "EXPERIÊNCIA AO VIVO"}</span><span className="stage-meta">CENA 01 / A IA QUE NÃO QUER TRABALHAR</span></div>
               <div className="stage-top-icon"><WandSparkles size={16}/></div>
             </div>
-            <div className="stage-body" ref={sceneRef} onPointerMove={onPointerMove} onPointerLeave={onPointerLeave}>
+            <div className="stage-body" data-prank={session.activePrank ?? undefined} ref={sceneRef} onPointerMove={onPointerMove} onPointerLeave={onPointerLeave}>
               <div className="stage-grid" aria-hidden="true"/>
               <div className="planet planet-one" aria-hidden="true">✳</div>
               <div className="planet planet-two" aria-hidden="true">✦</div>
@@ -173,7 +189,7 @@ export function Scene() {
               <div className="tiny-note note-right"><span>✧</span> 0% motivada<br/>100% debochada</div>
               <div className="scene-floor" aria-hidden="true" />
               <div className="actor" ref={actorRef}>
-                <div className="bubble" key={state.speech} role="status" aria-live="polite">
+                <div className="bubble" key={state.speechRevision} role="status" aria-live="polite">
                   <span className="bubble-avatar">IA</span>
                   <p>{state.speech}</p>
                   <span className="bubble-tail" />
@@ -186,17 +202,18 @@ export function Scene() {
                 {session.questionOriginal && <div className="last-question"><strong>Última pergunta:</strong>{" "}{maskedQuestion ? <><span aria-hidden="true">{maskedQuestion}</span><span className="sr-only">{session.questionOriginal}</span></> : session.questionOriginal}</div>}
                 <div className={`composer${wordTheftActive ? " word-theft-active" : ""}`}>
                   <textarea
+                    ref={questionInputRef}
                     aria-label="Sua pergunta para a IAda"
                     value={question}
                     onChange={e => setQuestion(e.target.value)}
                     onKeyDown={onInputKeyDown}
-                    readOnly={session.stage === "prank"}
+                    readOnly={isQuestionLocked(session)}
                     placeholder="Escreva sua pergunta... se tiver coragem."
                     rows={2}
                     maxLength={4000}
                   />
                   {maskedQuestion && <div className="stolen-question-preview" aria-hidden="true">{maskedQuestion}</div>}
-                  <button type="button" className="send-button" ref={sendButtonRef} onClick={() => send(question)} aria-label="Tentar enviar pergunta" disabled={busy || session.stage === "prank" || answering}>
+                  <button type="button" className="send-button" ref={sendButtonRef} onClick={() => send(question)} aria-label="Tentar enviar pergunta" disabled={busy || session.stage === "prank" || answering || transitioning}>
                     <Send size={20} strokeWidth={2.4}/>
                   </button>
                 </div>
@@ -207,6 +224,7 @@ export function Scene() {
               <div className="tip"><span className="tip-icon"><Sparkles size={16}/></span><span>{hint}</span></div>
               <button type="button" className="skip-button" onClick={onSkipPrank} title="Ignorar pegadinhas e pedir a resposta útil">Pular pegadinha <ArrowRight size={15}/></button>
             </div>
+            {transitioning && <div className="prank-transition" role="status" ref={transitionPanelRef} tabIndex={-1}>Desafio resolvido. A IAda está preparando a continuação…</div>}
             {session.stage === "prank" && session.activePrank && (
               <section className="prank-panel" aria-label="Pegadinha ativa" ref={prankPanelRef} tabIndex={-1}>
                 <strong>Desafio da IAda</strong>
@@ -225,6 +243,10 @@ export function Scene() {
                       </button>
                     ))}
                   </div>
+                ) : session.activePrank === "maintenance" ? (
+                  <MaintenanceTask key={`${session.roundCount}-maintenance`} onComplete={onResolvePrank} onSpeech={cue => speak(cue.text, cue.emotion, cue.gesture)} />
+                ) : session.activePrank === "dramatic-delay" ? (
+                  <DramaticTask key={`${session.roundCount}-dramatic`} onComplete={onResolvePrank} onSpeech={cue => speak(cue.text, cue.emotion, cue.gesture)} />
                 ) : session.activePrank === "blackout" ? (
                   <p className="blackout-instruction">O interruptor aparece no palco depois que a lanterna acender.</p>
                 ) : (
@@ -236,7 +258,7 @@ export function Scene() {
               <section className="answer-panel" aria-label="Resposta à pergunta original" ref={answerPanelRef} tabIndex={-1}>
                 <strong>Resposta útil</strong>
                 {answering && <div className="answer-wait"><p role="status">A IAda está gerando a resposta. Com o modelo local, isso pode levar cerca de um minuto.</p><button type="button" onClick={cancelAnswer}>Cancelar resposta</button></div>}
-                {answerText && <p>{answerText}</p>}
+                {answerText && <><p>{answerText}</p><small className="answer-note">Gerada pelo modelo local. Confira informações importantes.</small><FeedbackPanel key={session.roundCount} pranks={session.usedPranks} /></>}
                 {answerError && <div role="alert"><p>{answerError}</p><button type="button" onClick={retryAnswer}>Tentar novamente</button></div>}
                 {answerCancelled && <div><p role="status">Consulta cancelada. Sua pergunta original foi preservada.</p><button type="button" onClick={retryAnswer}>Tentar novamente</button></div>}
               </section>
@@ -249,7 +271,7 @@ export function Scene() {
               <div className="panel-section-label"><span>01</span> HUMOR ATUAL</div>
               <div className="emotions">
                 {EMOTIONS.map(item => (
-                  <button key={item.key} type="button" disabled={busy} className={`emotion-option ${state.emotion===item.key?"emotion-active":""}`} onClick={() => setEmotion(item.key)} aria-pressed={state.emotion===item.key}>
+                  <button key={item.key} type="button" disabled={controlsBusy} className={`emotion-option ${state.emotion===item.key?"emotion-active":""}`} onClick={() => setEmotion(item.key)} aria-pressed={state.emotion===item.key}>
                     <span className="emotion-face">{faceIcons[item.key]}</span><span className="emotion-name">{item.label}</span>
                   </button>
                 ))}
@@ -259,16 +281,16 @@ export function Scene() {
             <div className="panel-section">
               <div className="panel-section-label"><span>02</span> AÇÕES</div>
               <div className="action-buttons">
-                <button type="button" onClick={move} disabled={busy}><MoveUpRight size={18}/><span><strong>Passear pelo cenário</strong><small>Movimentação livre</small></span><ChevronRight size={16} className="action-chevron"/></button>
-                <button type="button" onClick={wave} disabled={busy}><Hand size={18}/><span><strong>Acenar para você</strong><small>Gesto + balão de fala</small></span><ChevronRight size={16} className="action-chevron"/></button>
-                <button type="button" onClick={()=>setEmotion("sarcastic")} disabled={busy}><MessageCircle size={18}/><span><strong>Modo debochado</strong><small>Sarcasmo ativado</small></span><ChevronRight size={16} className="action-chevron"/></button>
-                <button type="button" onClick={()=>setEmotion("sleepy")} disabled={busy}><Coffee size={18}/><span><strong>Hora do cochilo</strong><small>Pausa dramática</small></span><ChevronRight size={16} className="action-chevron"/></button>
+                <button type="button" onClick={move} disabled={controlsBusy}><MoveUpRight size={18}/><span><strong>Passear pelo cenário</strong><small>Movimentação livre</small></span><ChevronRight size={16} className="action-chevron"/></button>
+                <button type="button" onClick={wave} disabled={controlsBusy}><Hand size={18}/><span><strong>Acenar para você</strong><small>Gesto + balão de fala</small></span><ChevronRight size={16} className="action-chevron"/></button>
+                <button type="button" onClick={()=>setEmotion("sarcastic")} disabled={controlsBusy}><MessageCircle size={18}/><span><strong>Modo debochado</strong><small>Sarcasmo ativado</small></span><ChevronRight size={16} className="action-chevron"/></button>
+                <button type="button" onClick={()=>setEmotion("sleepy")} disabled={controlsBusy}><Coffee size={18}/><span><strong>Hora do cochilo</strong><small>Pausa dramática</small></span><ChevronRight size={16} className="action-chevron"/></button>
               </div>
             </div>
             <div className="panel-separator"/>
             <div className="panel-section">
               <div className="panel-section-label"><span>03</span> ESTADO DA SESSÃO</div>
-              <div className="metric-card"><div><span>Pegadinhas nesta pergunta</span><strong>{session.prankCount} / {MAX_PRANKS}</strong></div><div className="progress-track"><div style={{width:`${session.prankCount / MAX_PRANKS * 100}%`}}/></div><small>Após o limite, a IAda encerra a encenação.</small></div>
+              <div className="metric-card"><div><span>Pegadinhas nesta pergunta</span><strong>{session.prankCount} / {session.prankBudget}</strong></div><div className="progress-track"><div style={{width:`${session.prankCount / session.prankBudget * 100}%`}}/></div><small>{session.questionOriginal ? "Resolva cada desafio; a continuação é automática." : "Rodadas de 2 ou 3 desafios; no máximo 4."}</small></div>
               <button type="button" className="reset-control" onClick={onResetQuestion}><RotateCcw size={14}/> Reiniciar pergunta</button>
             </div>
             <div className="panel-bottom"><span className="star">✦</span><p><strong>Pequeno detalhe:</strong> a resposta útil depende do Ollama local. As pegadinhas continuam funcionando mesmo se o modelo estiver indisponível.</p></div>

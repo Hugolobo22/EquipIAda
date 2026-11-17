@@ -1,0 +1,73 @@
+{
+  "data": "2026-11-17",
+  "escopo": "Verificações anteriores ao envio das alterações locais solicitado pelo usuário. A aplicação continua local; nenhum site foi hospedado.",
+  "repositorio": "https://github.com/Hugolobo22/EquipIAda",
+  "branchDestino": "main",
+  "conteudo": [
+    "Avaliações voluntárias integradas a SQLite, migração e testes de persistência, transação e rollback",
+    "Melhorias de ritmo, ações das pegadinhas, gestos, foco e recuperação de respostas",
+    "Iniciador local e diagnóstico com proteção contra chamadas pagas",
+    "Requisitos, critérios A3, roteiro da demonstração e evidências de testes",
+    "Atualização corretiva de Next.js e eslint-config-next para 16.4.5",
+    "Exclusão do controle de versão de next-env.d.ts, preservando o arquivo gerado localmente"
+  ],
+  "correcaoDeDependencias": {
+    "nextAnterior": "16.4.2",
+    "nextAtual": "16.4.5",
+    "eslintConfigNextAtual": "16.4.5",
+    "motivo": "A verificação do Next.js interrompeu build e servidor de testes com alerta confirmado pelo npm audit. Foi aplicada a versão corretiva, sem mudança de versão principal.",
+    "fontesOficiais": [
+      "https://github.com/vercel/next.js/releases/tag/v16.4.5",
+      "https://github.com/vercel/next.js/security/advisories/GHSA-mfr8-8qww-v76h",
+      "https://github.com/vercel/next.js/security/advisories/GHSA-vc7v-qv4w-wrv8"
+    ],
+    "auditoriaExecucao": {
+      "comando": "npm audit --omit=dev --json",
+      "total": 0
+    },
+    "auditoriaCompleta": {
+      "comando": "npm audit --json",
+      "total": 15,
+      "moderados": 6,
+      "altos": 9,
+      "escopoRestante": "Ferramentas de desenvolvimento e suas dependências, incluindo eslint-config-next e analisadores de arquivos. Não foi aplicado npm audit fix --force nem o downgrade incompatível sugerido para eslint-config-next."
+    }
+  },
+  "verificacoesFinais": [
+    { "comando": "npm run test", "resultado": "aprovado", "testes": 38, "falhas": 0 },
+    { "comando": "npm run lint", "resultado": "aprovado" },
+    { "comando": "npm run build", "resultado": "aprovado", "next": "16.4.5" },
+    { "comando": "npm run typecheck", "resultado": "aprovado" },
+    {
+      "comando": "npm run test:browser",
+      "resultado": "aprovado nos cenários habilitados",
+      "aprovados": 15,
+      "falhas": 0,
+      "ignorados": 1,
+      "duracaoSegundos": 42.2,
+      "motivoDoCasoIgnorado": "EQUIPIADA_REAL_MODEL não habilitada; consulta real ao Ollama não repetida nesta revisão.",
+      "persistencia": "SQLite real em banco de teste separado; as respostas do modelo foram simuladas."
+    }
+  ],
+  "ocorrenciasResolvidas": [
+    "Build e primeira rodada de navegador interrompidos pelo aviso de segurança do Next.js 16.4.2; resolvidos com 16.4.5 e repetição das verificações.",
+    "Windows/OneDrive bloqueou unlink na saída .next anterior. O cache foi preservado na pasta temporária do Windows e o build foi concluído em saída limpa. Uma tentativa intermediária incluiu os tipos do cache preservado dentro de tmp; mover esse cache para fora do projeto eliminou os erros de referências antigas."
+  ],
+  "privacidade": {
+    "arquivosDeAmbientePrivados": "Ignorados pelo Git; somente .env.example sem credenciais é versionado.",
+    "bancosComDados": "Ignorados pelo Git; migração SQL versionada, sem arquivo SQLite.",
+    "revisao": "Conteúdo preparado revisado por padrões de credenciais e comparação com valores sensíveis de .env.local, sem imprimir esses valores; sem ocorrências na revisão inicial."
+  },
+  "capturasDestaRevisao": [
+    "reports/dramatic-preview-2026-11-17.png",
+    "reports/maintenance-preview-2026-11-17.png",
+    "reports/feedback-mobile-2026-11-17.png"
+  ],
+  "limites": [
+    "Os 15 alertas das ferramentas de desenvolvimento permanecem registrados para revisão específica.",
+    "A geração real pelo Ollama foi validada em 11/11 e não repetida em 17/11.",
+    "Teste de clone limpo em outro ambiente, colegas, toque físico e leitor de tela continuam pendentes.",
+    "O envio de código ao GitHub não conclui UC HUB, formulário, composição da equipe, ensaio individual ou fechamento acadêmico até 27/11.",
+    "O modelo local pode cometer erros factuais."
+  ]
+}

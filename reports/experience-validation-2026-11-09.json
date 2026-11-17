@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-09",
+  "scope": "Experiência local com Ollama; testes automatizados e revisão de respostas pelo assistente, sem sessões com usuários reais.",
+  "changes": [
+    "Orçamento fixado por pergunta: duas, três ou no máximo quatro cenas.",
+    "Continuação automática após a resolução, cancelável por Pular ou Reiniciar.",
+    "Manutenção com dois ajustes e carregamento dramático com barra de coragem fictícia.",
+    "Falas com variações por rodada e conclusão específica; gestos temporários.",
+    "Foco, alvos de toque, texto acessível do mascote e apresentação da pergunta em tela estreita.",
+    "Instruções mais focadas para respostas, exemplos completos e limites de HTTPS."
+  ],
+  "validation": {
+    "unitTests": { "passed": 32, "failed": 0 },
+    "browserTests": { "passed": 12, "failed": 0, "browser": "Google Chrome", "simulatedResponseCases": 11, "realOllamaCases": 1 },
+    "finalRealRound": "Aprovada novamente após incluir a nota da resposta e a descrição do mascote em português.",
+    "typecheck": "aprovado",
+    "lint": "aprovado",
+    "build": "aprovado",
+    "privatePromptsUsed": false,
+    "paidCallsEnabled": false
+  },
+  "answerEvaluation": {
+    "report": "answer-evaluation-qwen3-8b-melhorias-final.json",
+    "model": "qwen3:8b",
+    "instructionHash": "42d494046ff29b5e1bf132eae65d03eeb154f1094583b8fda9ab4f06e72f1012",
+    "cases": 23,
+    "reviewByAssistant": { "adequate": 19, "needsReview": ["E01", "C07"], "factualErrors": ["E02", "E03"] },
+    "medianLatencyMs": 3545,
+    "meanLatencyMs": 5106,
+    "minLatencyMs": 732,
+    "maxLatencyMs": 13853,
+    "transportFailures": 0,
+    "note": "Amostra única; não mede confiabilidade geral nem comparação controlada de velocidade. As instruções não implementam checagem factual."
+  },
+  "limitations": [
+    "Toque e movimento reduzido simulados no navegador; aparelho físico e leitor de tela não testados.",
+    "Diversão, frustração e adequação do ritmo ainda não foram observadas em sessões com colegas.",
+    "O modelo local ainda produz erros factuais, inclusive sem alerta automático.",
+    "Prompt curto, textão e interrogatório ainda usam confirmação simples; o catálogo de 20 cenas não está completo."
+  ]
+}

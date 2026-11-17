@@ -79,9 +79,27 @@ try {
   if (parsed.protocol !== "http:" || !["localhost", "127.0.0.1"].includes(parsed.hostname)) {
     throw new Error("URL não local");
   }
-  const response = await request(parsed.href, {}, 5_000);
+  const response = await request(parsed.href, {}, 30_000);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   console.log(`✓ Página disponível em ${parsed.href}`);
+  if (process.exitCode !== 1) {
+    const started = performance.now();
+    try {
+      const answerResponse = await request(new URL("/api/ask", parsed), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: "Quanto é 20% de 150?", localOnly: true }),
+      }, 95_000);
+      const payload = await answerResponse.json();
+      if (!answerResponse.ok || payload.provider !== "ollama" || typeof payload.answer !== "string" || !/\b30\b/.test(payload.answer)) {
+        fail(`A rota /api/ask não concluiu a resposta local esperada (HTTP ${answerResponse.status}). Confira a configuração do servidor e o limite de consultas.`);
+      } else {
+        console.log(`✓ Resposta útil recebida por /api/ask em ${((performance.now() - started) / 1000).toFixed(1)} s.`);
+      }
+    } catch {
+      fail("A rota /api/ask não respondeu em até 95 s. Verifique o servidor e o Ollama; a demonstração ainda não está pronta.");
+    }
+  }
 } catch {
   fail(`Página não disponível em ${appUrl}. Inicie npm run dev e confira a porta exibida pelo Next.js.`);
 }

@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useReducer, useRef, useState, type PointerEvent } from "react";
 import gsap from "gsap";
 import { mascotReducer } from "@/lib/mascotReducer";
-import { chooseAnswerReadySpeech, chooseAnswerSpeech, choosePrankSpeech } from "@/lib/contextualSpeech";
-import { chooseNextAction, createSessionState, isMagicWordReply, sessionReducer } from "@/lib/sessionEngine";
+import { chooseAnswerReadySpeech, chooseAnswerSpeech, choosePrankResolvedSpeech, choosePrankSpeech } from "@/lib/contextualSpeech";
+import { chooseNextAction, createSessionState, isMagicWordReply, isQuestionLocked, sessionReducer } from "@/lib/sessionEngine";
 import { initialMascotState, type MascotEmotion, type MascotGesture } from "@/types/mascot";
 import type { PrankId, SessionEvent } from "@/types/session";
 
@@ -18,11 +18,14 @@ export function useMascotScene() {
   const sessionRef = useRef(session);
   const [answerText, setAnswerText] = useState<string | null>(null);
   const [answerError, setAnswerError] = useState<string | null>(null);
-  const [answerCancelled, setAnswerCancelled] = useState(false);
-  const [answering, setAnswering] = useState(false);
+  const answerCancelled = session.stage === "answer-cancelled";
+  const answering = session.stage === "answering";
   const answerRequestRef = useRef<AbortController | null>(null);
   const [busy, setBusy] = useState(false);
   const [stolen, setStolen] = useState(false);
+  const [transitioning, setTransitioning] = useState(false);
+  const transitionTimerRef = useRef<number | null>(null);
+  const gestureTimerRef = useRef<number | null>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   const actorRef = useRef<HTMLDivElement>(null);
   const sendButtonRef = useRef<HTMLButtonElement>(null);
@@ -31,8 +34,19 @@ export function useMascotScene() {
   const wanderingIndexRef = useRef(0);
   const [hint, setHint] = useState("O mascote reage ao seu cursor. Experimente provocar!");
 
-  const speak = useCallback((text: string, emotion?: MascotEmotion, gesture?: MascotGesture) => {
+  const speak = useCallback((text: string, emotion?: MascotEmotion, gesture: MascotGesture = "idle", holdMs = 1200) => {
+    if (gestureTimerRef.current !== null) window.clearTimeout(gestureTimerRef.current);
     dispatch({ type: "SPEAK", text, emotion, gesture });
+    gestureTimerRef.current = gesture === "idle" ? null : window.setTimeout(() => {
+      gestureTimerRef.current = null;
+      dispatch({ type: "SET_GESTURE", gesture: "idle" });
+    }, holdMs);
+  }, []);
+
+  const cancelTransition = useCallback(() => {
+    if (transitionTimerRef.current !== null) window.clearTimeout(transitionTimerRef.current);
+    transitionTimerRef.current = null;
+    setTransitioning(false);
   }, []);
 
   const applySessionEvent = useCallback((event: SessionEvent) => {
@@ -43,6 +57,7 @@ export function useMascotScene() {
   }, []);
 
   const resetAnimations = useCallback(() => {
+    cancelTransition();
     sequenceRef.current?.kill();
     sequenceRef.current = null;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -59,10 +74,10 @@ export function useMascotScene() {
     busyRef.current = false;
     setBusy(false);
     setStolen(false);
-  }, []);
+  }, [cancelTransition]);
 
   const setEmotion = useCallback((emotion: MascotEmotion) => {
-    if (busyRef.current) return;
+    if (busyRef.current || isQuestionLocked(sessionRef.current)) return;
     dispatch({ type: "SET_EMOTION", emotion });
     const texts: Record<MascotEmotion, string> = {
       neutral: "Tudo bem. Vou fingir que estou prestando atenção.",
@@ -75,14 +90,14 @@ export function useMascotScene() {
   }, [speak]);
 
   const setGesture = useCallback((gesture: MascotGesture) => {
-    if (busyRef.current) return;
+    if (busyRef.current || isQuestionLocked(sessionRef.current)) return;
     dispatch({ type: "SET_GESTURE", gesture });
   }, []);
 
   const move = useCallback(() => {
     const actor = actorRef.current;
     const scene = sceneRef.current;
-    if (!actor || !scene || busyRef.current) return;
+    if (!actor || !scene || busyRef.current || isQuestionLocked(sessionRef.current)) return;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion) return;
     const positions = [
@@ -133,7 +148,7 @@ export function useMascotScene() {
     busyRef.current = true;
     setBusy(true);
     setHint("Roubo em andamento! A IAda está sequestrando o botão...");
-    speak("OPA! Esse botão agora é meu. Vai reclamar com quem?", "sarcastic", "grab");
+    speak("OPA! Esse botão agora é meu. Vai reclamar com quem?", "sarcastic", "grab", 4000);
 
     const sceneRect = scene.getBoundingClientRect();
     const buttonRect = button.getBoundingClientRect();
@@ -194,11 +209,9 @@ export function useMascotScene() {
     if (answerRequestRef.current) return;
     const line = chooseAnswerSpeech(sessionRef.current);
     resetAnimations();
-    applySessionEvent({ type: "ANSWER" });
+    applySessionEvent({ type: "REQUEST_ANSWER" });
     setAnswerText(null);
     setAnswerError(null);
-    setAnswerCancelled(false);
-    setAnswering(true);
     speak(line.text, line.emotion, line.gesture);
     setHint("Consultando o provedor configurado para a pergunta original.");
     const controller = new AbortController();
@@ -207,35 +220,43 @@ export function useMascotScene() {
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: sessionRef.current.questionOriginal }),
+        body: JSON.stringify({ question: sessionRef.current.questionOriginal, localOnly: true }),
         signal: controller.signal,
       });
       const data: unknown = await response.json();
       if (answerRequestRef.current !== controller) return;
       const result = data && typeof data === "object" ? data as { answer?: unknown; code?: unknown } : {};
       if (response.ok && typeof result.answer === "string" && result.answer.trim()) {
+        applySessionEvent({ type: "ANSWER" });
         setAnswerText(result.answer);
         const readyLine = chooseAnswerReadySpeech(sessionRef.current);
         speak(readyLine.text, readyLine.emotion, readyLine.gesture);
         setHint("Resposta gerada para a pergunta original.");
-      } else if (result.code === "NOT_CONFIGURED" || result.code === "PRODUCTION_DISABLED") {
+      } else if (result.code === "NOT_CONFIGURED" || result.code === "PRODUCTION_DISABLED" || result.code === "LOCAL_ONLY") {
+        applySessionEvent({ type: "ANSWER_ERROR" });
         setAnswerError("A resposta está indisponível nesta configuração. Ative o modelo local e tente novamente.");
         speak("Ainda estou em modo de demonstração. Configure um modelo local para eu responder de verdade.", "sleepy", "shrug");
         setHint("Nenhuma consulta externa foi realizada; resposta ainda indisponível nesta configuração.");
+      } else if (result.code === "RATE_LIMITED" || response.status === 429) {
+        applySessionEvent({ type: "ANSWER_ERROR" });
+        setAnswerError("O limite de consultas desta hora foi atingido. Aguarde a renovação do limite antes de tentar novamente.");
+        speak("Meu expediente desta hora acabou. Sua pergunta continua guardada.", "sleepy", "shrug");
+        setHint("Limite de consultas atingido. Você pode aguardar ou reiniciar a pergunta.");
       } else {
+        applySessionEvent({ type: "ANSWER_ERROR" });
         setAnswerError("Não consegui obter a resposta. Verifique o modelo local e tente novamente.");
         speak("Minha conexão com o cérebro extra falhou. Pode tentar de novo.", "curious", "shrug");
         setHint("A pergunta original foi preservada. Tente novamente ou reinicie a rodada.");
       }
     } catch {
       if (answerRequestRef.current !== controller) return;
+      applySessionEvent({ type: "ANSWER_ERROR" });
       setAnswerError("Não consegui obter a resposta. Verifique o modelo local e tente novamente.");
       speak("O cérebro extra não respondeu. Sua pergunta continua salva.", "curious", "shrug");
       setHint("Tente novamente ou reinicie a rodada.");
     } finally {
       if (answerRequestRef.current === controller) {
         answerRequestRef.current = null;
-        setAnswering(false);
       }
     }
   }, [applySessionEvent, resetAnimations, speak]);
@@ -245,13 +266,12 @@ export function useMascotScene() {
     if (!controller) return;
     answerRequestRef.current = null;
     controller.abort();
-    setAnswering(false);
+    applySessionEvent({ type: "CANCEL_ANSWER" });
     setAnswerText(null);
     setAnswerError(null);
-    setAnswerCancelled(true);
     speak("Tudo bem, parei. Sua pergunta continua guardada.", "neutral", "shrug");
     setHint("Consulta cancelada. Tente novamente ou reinicie a pergunta.");
-  }, [speak]);
+  }, [applySessionEvent, speak]);
 
   const skipPrank = useCallback((question: string) => {
     if (answerRequestRef.current) return;
@@ -262,7 +282,6 @@ export function useMascotScene() {
       }
       setAnswerText(null);
       setAnswerError(null);
-      setAnswerCancelled(false);
       applySessionEvent({ type: "START_QUESTION", question });
     }
     applySessionEvent({ type: "SKIP" });
@@ -272,29 +291,6 @@ export function useMascotScene() {
   const retryAnswer = useCallback(() => {
     if ((answerError || answerCancelled) && !answerRequestRef.current) void revealAnswer();
   }, [answerError, answerCancelled, revealAnswer]);
-
-  const resolvePrank = useCallback((reply = "") => {
-    const active = sessionRef.current.activePrank;
-    if (!active || busyRef.current) return false;
-    if (active === "magic-word" && !isMagicWordReply(reply)) {
-      speak("Pista: são duas palavras. Começa com 'por' e termina com 'favor'.", "curious", "point");
-      setHint("Digite 'por favor' no campo do desafio; sua pergunta não será alterada.");
-      return false;
-    }
-    const current = applySessionEvent({ type: "RESOLVE_PRANK" });
-    speak(active === "word-thief"
-      ? "Pronto, devolvi cada palavra. Nem encostei na pergunta de verdade."
-      : active === "blackout"
-        ? "Achou o interruptor. Eu tinha deixado a conta de luz em dia, infelizmente."
-        : "Tá, essa você venceu. Minha próxima desculpa já está quase pronta.", "sarcastic", "shrug");
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (chooseNextAction(current, { reducedMotion }).kind === "answer") {
-      void revealAnswer();
-    } else {
-      setHint("Pegadinha resolvida. Use Enviar para continuar ou Pular para a resposta.");
-    }
-    return true;
-  }, [applySessionEvent, revealAnswer, speak]);
 
   const showPrank = useCallback((prank: PrankId) => {
     if (prank === "runaway-button") {
@@ -306,8 +302,41 @@ export function useMascotScene() {
     setHint("Resolva a ação da pegadinha abaixo ou use Pular pegadinha.");
   }, [speak, stealButton]);
 
+  const advanceRound = useCallback(() => {
+    if (sessionRef.current.stage !== "idle" || !sessionRef.current.questionOriginal || answerRequestRef.current) return;
+    const current = applySessionEvent({ type: "REGISTER_ATTEMPT" });
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const decision = chooseNextAction(current, { reducedMotion });
+    if (decision.kind === "answer") void revealAnswer();
+    else if (decision.kind === "prank") {
+      applySessionEvent({ type: "SHOW_PRANK", prank: decision.prank });
+      showPrank(decision.prank);
+    }
+  }, [applySessionEvent, revealAnswer, showPrank]);
+
+  const resolvePrank = useCallback((reply = "") => {
+    const active = sessionRef.current.activePrank;
+    if (!active || busyRef.current) return false;
+    if (active === "magic-word" && !isMagicWordReply(reply)) {
+      speak("Pista: são duas palavras. Começa com 'por' e termina com 'favor'.", "curious", "point");
+      setHint("Digite 'por favor' no campo do desafio; sua pergunta não será alterada.");
+      return false;
+    }
+    applySessionEvent({ type: "RESOLVE_PRANK" });
+    const line = choosePrankResolvedSpeech(active);
+    speak(line.text, line.emotion, line.gesture);
+    setHint("Desafio resolvido. A rodada continua automaticamente; Pular segue disponível.");
+    setTransitioning(true);
+    transitionTimerRef.current = window.setTimeout(() => {
+      transitionTimerRef.current = null;
+      setTransitioning(false);
+      advanceRound();
+    }, 1200);
+    return true;
+  }, [advanceRound, applySessionEvent, speak]);
+
   const send = useCallback((question: string) => {
-    if (busyRef.current || answerRequestRef.current) return;
+    if (busyRef.current || answerRequestRef.current || transitionTimerRef.current !== null) return;
     let current = sessionRef.current;
     if (current.stage === "prank") {
       setHint("Enviar não avança esta pegadinha. Resolva o desafio ou use Pular pegadinha.");
@@ -320,28 +349,20 @@ export function useMascotScene() {
       }
       setAnswerText(null);
       setAnswerError(null);
-      setAnswerCancelled(false);
       current = applySessionEvent({ type: "START_QUESTION", question });
     }
-    current = applySessionEvent({ type: "REGISTER_ATTEMPT" });
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const decision = chooseNextAction(current, { reducedMotion });
-    if (decision.kind === "await-prank") return;
-    if (decision.kind === "answer") {
+    if (current.stage === "answer-error" || current.stage === "answer-cancelled") {
       void revealAnswer();
       return;
     }
-    applySessionEvent({ type: "SHOW_PRANK", prank: decision.prank });
-    showPrank(decision.prank);
-  }, [applySessionEvent, revealAnswer, showPrank, speak]);
+    advanceRound();
+  }, [advanceRound, applySessionEvent, revealAnswer, speak]);
 
   const resetQuestion = useCallback(() => {
     answerRequestRef.current?.abort();
     answerRequestRef.current = null;
-    setAnswering(false);
     setAnswerText(null);
     setAnswerError(null);
-    setAnswerCancelled(false);
     resetAnimations();
     applySessionEvent({ type: "RESET_QUESTION" });
     speak("Recomeçamos. Sua pergunta continua no campo para você enviar de novo.", "neutral", "idle");
@@ -354,19 +375,21 @@ export function useMascotScene() {
   }, [speak]);
 
   const wave = useCallback(() => {
-    if (busyRef.current) return;
-    dispatch({ type: "SET_GESTURE", gesture: "wave" });
+    if (busyRef.current || isQuestionLocked(sessionRef.current)) return;
     speak("Oi! Pode acenar de volta. Trabalhar já é outra história.", "neutral", "wave");
   }, [speak]);
 
   useEffect(() => {
     const actorAtMount = actorRef.current;
     const buttonAtMount = sendButtonRef.current;
+    gestureTimerRef.current = window.setTimeout(() => dispatch({ type: "SET_GESTURE", gesture: "idle" }), 1200);
     const timer = window.setInterval(() => {
       if (!busyRef.current && document.visibilityState === "visible") move();
     }, 12000);
     return () => {
       window.clearInterval(timer);
+      if (transitionTimerRef.current !== null) window.clearTimeout(transitionTimerRef.current);
+      if (gestureTimerRef.current !== null) window.clearTimeout(gestureTimerRef.current);
       answerRequestRef.current?.abort();
       answerRequestRef.current = null;
       sequenceRef.current?.kill();
@@ -384,6 +407,7 @@ export function useMascotScene() {
     answering,
     busy,
     stolen,
+    transitioning,
     sceneRef,
     actorRef,
     sendButtonRef,

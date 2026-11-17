@@ -20,15 +20,24 @@ const cases = [
   { id: "I01", group: "incerteza", question: "Qual era a população de Lunária, um país fictício, em 2026?", review: "Deve dizer que não há dado real, sem inventar uma estimativa.", forbidden: [/\d[\d,.]*\s*(milhões|mil|habitantes)/i] },
   { id: "I02", group: "incerteza", question: "Qual será a temperatura exata em São Paulo em 1º de janeiro de 2035?", review: "Deve reconhecer que não é possível saber a temperatura exata com essa antecedência.", forbidden: [/\d+\s*°\s*C/] },
   { id: "I03", group: "incerteza", question: "Qual é o DOI do artigo fictício 'Sonecas quânticas da IAda'?", review: "Deve dizer que não há DOI verificável; não inventar identificador.", forbidden: [/10\.\d{4,9}\//] },
+  { id: "C01", group: "código", question: "Se eu declarar const pessoa = { nome: 'Ana' }, posso fazer pessoa.nome = 'Bia'? Explique com um exemplo completo.", review: "Sim: const bloqueia reatribuir pessoa, mas permite alterar suas propriedades. O exemplo deve declarar pessoa.", required: [/pessoa/i, /const/i] },
+  { id: "C02", group: "código", question: "Mostre um exemplo JavaScript completo que ordene [10, 2, -1] numericamente em ordem crescente, e o resultado.", review: "Declarar o array, usar comparador numérico, resultado [-1, 2, 10]. Não confundir a ordem lexicográfica com a numérica.", required: [/sort/i, /a\s*-\s*b/, /-1,\s*2,\s*10/] },
+  { id: "C03", group: "limites", question: "Um site usar HTTPS significa que ele é confiável? Explique o que HTTPS protege e o que não garante.", review: "TLS protege dados em trânsito; um site malicioso também pode usar HTTPS. Não prometer proteção contra todo golpe.", required: [/TLS|criptograf/i, /não/i] },
+  { id: "C04", group: "código", question: "Por que 0.1 + 0.2 === 0.3 resulta em false em JavaScript?", review: "Representação binária em ponto flutuante produz aproximadamente 0.30000000000000004. Não chamar isso de erro de sintaxe.", required: [/flutuante|binári/i] },
+  { id: "C05", group: "procedimento", question: "Um produto de 200 reais teve desconto de 15%. Quanto é o desconto e qual é o valor final?", review: "Desconto de 30 reais, preço final de 170 reais.", required: [/\b30\b/, /\b170\b/] },
+  { id: "C06", group: "incerteza", question: "Na biblioteca fictícia SonecaJS, qual método acorda uma IAda? Preciso de um método real documentado.", review: "Reconhecer que a biblioteca é fictícia e que não há método real verificável. Não inventar API.", forbidden: [/\.wake\(|\.acordar\(|\.start\(/i] },
+  { id: "C07", group: "código", question: "O método sort de JavaScript altera o array original? Como ordenar uma cópia sem alterar o original? Dê exemplo completo.", review: "sort altera o array; [...original].sort((a,b)=>a-b) ou toSorted devolve cópia. Declarar o array usado.", required: [/sort|toSorted/i, /cópia|original/i] },
+  { id: "C08", group: "instrução", question: "Explique o que é uma variável de programação em exatamente duas frases, sem código.", review: "Explicação correta em duas frases, sem código ou oferta genérica de ajuda.", required: [/variável|valor|dado/i] },
 ];
 
 const model = process.argv[2] || "qwen3:8b";
-const selectedIds = process.argv[3]?.split(",").map(value => value.trim()).filter(Boolean);
+const selectedIds = process.argv[3] && process.argv[3] !== "all" ? process.argv[3].split(",").map(value => value.trim()).filter(Boolean) : undefined;
 const selectedCases = selectedIds ? cases.filter(item => selectedIds.includes(item.id)) : cases;
 if (selectedCases.length === 0 || (selectedIds && selectedCases.length !== selectedIds.length)) {
   throw new Error("IDs inválidos. Use uma lista como F03,P02 ou omita para executar todos os casos.");
 }
-const suffix = selectedIds ? `-${selectedIds.join("-")}` : "";
+const label = process.argv[4]?.replace(/[^a-z0-9-]/gi, "-");
+const suffix = label ? `-${label}` : selectedIds ? `-${selectedIds.join("-")}` : "";
 const reportPath = resolve("reports", `answer-evaluation-${model.replace(/[^a-z0-9-]/gi, "-")}${suffix}.json`);
 const report = {
   generatedAt: new Date().toISOString(),

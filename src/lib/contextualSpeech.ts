@@ -1,7 +1,7 @@
 import type { MascotEmotion, MascotGesture } from "@/types/mascot";
 import type { PrankId, SessionState } from "@/types/session";
 
-type SpeechCue = { text: string; emotion: MascotEmotion; gesture: MascotGesture };
+export type SpeechCue = { text: string; emotion: MascotEmotion; gesture: MascotGesture };
 type Topic = "code" | "calculation" | "explanation" | "general";
 
 function questionTopic(question: string): Topic {
@@ -58,6 +58,25 @@ const prankSpeech: Record<Exclude<PrankId, "runaway-button">, SpeechCue> = {
   maintenance: { text: "Aviso de manutenção: minha vontade de trabalhar está temporariamente indisponível.", emotion: "sleepy", gesture: "idle" },
 };
 
+const alternateSpeech: Partial<typeof prankSpeech> = {
+  "short-prompt": { text: "Sua pergunta veio no modo econômico. Minha disposição também. Vamos manter assim?", emotion: "sarcastic", gesture: "shrug" },
+  "long-prompt": { text: "Esse textão quase ganhou sumário. Confirme que eu preciso ler tudinho.", emotion: "sleepy", gesture: "point" },
+  "magic-word": { text: "Meu sistema de boa vontade aceita duas palavras. A dica continua sendo 'por favor'.", emotion: "curious", gesture: "point" },
+  "word-thief": { text: "Duas palavras foram passar férias nos meus bolsos. Você pode trazer cada uma de volta.", emotion: "sarcastic", gesture: "grab" },
+  blackout: { text: "Desliguei a luz para ver se o trabalho desaparecia. Spoiler: não desapareceu.", emotion: "sarcastic", gesture: "shrug" },
+  maintenance: { text: "Diagnóstico: soneca ligada, boa vontade desconectada. Dois ajustes e eu perco minha desculpa.", emotion: "sleepy", gesture: "point" },
+  "dramatic-delay": { text: "Minha coragem está em zero. Dê dois empurrõezinhos nessa barra, por gentileza.", emotion: "sarcastic", gesture: "shrug" },
+};
+
+export function choosePrankResolvedSpeech(prank: PrankId): SpeechCue {
+  const text = prank === "word-thief" ? "Pronto, devolvi cada palavra. Sua pergunta continua inteira."
+    : prank === "blackout" ? "Luz de volta. Minha desculpa ficou sem energia."
+      : prank === "maintenance" ? "Soneca desligada, boa vontade conectada. Péssimas notícias para minha folga."
+        : prank === "dramatic-delay" ? "Coragem em cem por cento. Agora só falta a vontade. Essa eu improviso."
+          : "Essa você venceu. Minha coleção de desculpas está diminuindo.";
+  return { text, emotion: "sarcastic", gesture: "shrug" };
+}
+
 export function choosePrankSpeech(prank: Exclude<PrankId, "runaway-button">, session: SessionState): SpeechCue {
   const topic = questionTopic(session.questionOriginal ?? "");
   if (prank === "interrogation" && topic === "code") {
@@ -72,5 +91,7 @@ export function choosePrankSpeech(prank: Exclude<PrankId, "runaway-button">, ses
   if (prank === "maintenance" && session.traits.laziness < 60) {
     return { text: "Minha desculpa de manutenção perdeu a força. Confirme que ainda quer a resposta.", emotion: "sarcastic", gesture: "shrug" };
   }
-  return prankSpeech[prank];
+  return (session.roundCount + session.prankCount) % 2 === 0
+    ? alternateSpeech[prank] ?? prankSpeech[prank]
+    : prankSpeech[prank];
 }

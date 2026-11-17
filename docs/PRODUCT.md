@@ -25,3 +25,7 @@ Pessoas interessadas em interações humorísticas com tecnologia e experiência
 
 ## Fora do escopo inicial
 Clonar ChatGPT, histórico persistente, app móvel nativo, pagamentos, editor para terceiros, várias personalidades selecionáveis, execução livre de código gerado por IA.
+
+## Adequação A3 — 9 de novembro
+
+O documento acadêmico exige banco integrado. Foi acrescentada uma avaliação opcional ao final da resposta: utilidade e diversão, com resumo persistido em SQLite. Apenas notas e IDs de cenas são armazenados após confirmação; perguntas, respostas e dados pessoais não entram no banco. O histórico de conversa continua fora do escopo. RF/RNF e critérios de aceite estão em `docs/REQUIREMENTS.md`; a matriz acadêmica está em `docs/A3_COMPLIANCE.md`.

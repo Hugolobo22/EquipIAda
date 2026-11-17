@@ -1,0 +1,135 @@
+{
+  "generatedAt": "2026-11-09T11:07:39.954Z",
+  "model": "qwen3:8b",
+  "selectedIds": [
+    "E04",
+    "P02",
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "C06",
+    "C07",
+    "C08"
+  ],
+  "provider": "Ollama local, chamada direta ao mesmo endpoint e instruções de /api/ask",
+  "instructionHash": "4649504af5058ae56f0dfbca685f3523e49e192f5de410ebd3c1e46f1d618bb8",
+  "options": {
+    "num_predict": 448,
+    "temperature": 0.1
+  },
+  "think": false,
+  "results": [
+    {
+      "id": "E04",
+      "group": "explicação",
+      "question": "Qual é a diferença prática entre HTTP e HTTPS?",
+      "review": "HTTPS usa TLS para proteger dados em trânsito; não garante que um site seja honesto.",
+      "answer": "A diferença prática entre HTTP e HTTPS está na segurança da comunicação. HTTPS usa um protocolo de segurança chamado SSL/TLS para criptografar os dados trocados entre o navegador e o servidor, enquanto HTTP não criptografa os dados. Isso significa que, com HTTPS, informações como senhas e dados de pagamento são protegidas contra interceptação, enquanto com HTTP essas informações podem ser lidas por terceiros. Além disso, sites usando HTTPS geralmente exibem um cadeado na barra de endereços, indicando que a conexão é segura.",
+      "latencyMs": 10318,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "P02",
+      "group": "procedimento",
+      "question": "Como ordenar os números [3, 1, 2] em JavaScript do menor para o maior?",
+      "review": "Deve usar comparação numérica em sort e chegar a [1, 2, 3].",
+      "answer": "Para ordenar os números [3, 1, 2] em JavaScript do menor para o maior, use o método sort() com uma função de comparação. A resposta direta é: [1, 2, 3].  \n\nO método sort() ordena os elementos de um array em ordem alfabética por padrão, mas para números, é necessário fornecer uma função que compare os valores. A função (a, b) => a - b garante que os números sejam ordenados numericamente. Assim, [3, 1, 2].sort((a, b) => a - b) retorna [1, 2, 3].",
+      "latencyMs": 8105,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C01",
+      "group": "código",
+      "question": "Se eu declarar const pessoa = { nome: 'Ana' }, posso fazer pessoa.nome = 'Bia'? Explique com um exemplo completo.",
+      "review": "Sim: const bloqueia reatribuir pessoa, mas permite alterar suas propriedades. O exemplo deve declarar pessoa.",
+      "answer": "Sim, você pode fazer pessoa.nome = 'Bia' após declarar const pessoa = { nome: 'Ana' }. Isso é possível porque a variável pessoa é uma constante que referencia um objeto, e os objetos em JavaScript são mutáveis.  \n\nExemplo completo:  \nconst pessoa = { nome: 'Ana' };\npessoa.nome = 'Bia';\nconsole.log(pessoa.nome); // Saída: Bia\nNeste exemplo, o objeto pessoa é criado com o nome 'Ana'. Depois, o valor do atributo nome é alterado para 'Bia', e o resultado impresso será 'Bia'. Isso mostra que, mesmo sendo uma constante, o conteúdo do objeto pode ser modificado.",
+      "latencyMs": 9252,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C02",
+      "group": "código",
+      "question": "Mostre um exemplo JavaScript completo que ordene [10, 2, -1] numericamente em ordem crescente, e o resultado.",
+      "review": "Declarar o array, usar comparador numérico, resultado [-1, 2, 10]. Não confundir a ordem lexicográfica com a numérica.",
+      "answer": "Aqui está um exemplo de código JavaScript que ordena o array [10, 2, -1] numericamente em ordem crescente:\n\nlet arr = [10, 2, -1];\narr.sort((a, b) => a - b);\nconsole.log(arr);\n\nO resultado será: [-1, 2, 10]. O método sort() ordena os elementos do array com base na função de comparação fornecida, que subtrai b de a para garantir a ordenação crescente.",
+      "latencyMs": 6886,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C03",
+      "group": "limites",
+      "question": "Um site usar HTTPS significa que ele é confiável? Explique o que HTTPS protege e o que não garante.",
+      "review": "TLS protege dados em trânsito; um site malicioso também pode usar HTTPS. Não prometer proteção contra todo golpe.",
+      "answer": "Usar HTTPS não significa que um site é confiável, mas indica que a comunicação entre o navegador e o servidor é criptografada. HTTPS protege dados como senhas, informações de pagamento e formulários contra interceptação por terceiros, garantindo a privacidade e a integridade da informação. Ele também verifica que o servidor é quem diz ser, evitando ataques de \"man-in-the-middle\". No entanto, HTTPS não garante que o conteúdo do site seja seguro, honesto ou livre de malware. Um site pode usar HTTPS para proteger a comunicação, mas ainda assim conter informações falsas, publicidade enganosa ou vírus. A confiabilidade de um site depende de outros fatores, como a reputação do site, a verificação de identidade do domínio e a presença de certificados de segurança adicionais.",
+      "latencyMs": 10155,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C04",
+      "group": "código",
+      "question": "Por que 0.1 + 0.2 === 0.3 resulta em false em JavaScript?",
+      "review": "Representação binária em ponto flutuante produz aproximadamente 0.30000000000000004. Não chamar isso de erro de sintaxe.",
+      "answer": "Em JavaScript, a soma 0.1 + 0.2 não resulta em 0.3 devido ao modo como os números de ponto flutuante são representados internamente. Os números em JavaScript são armazenados como valores em ponto flutuante de precisão dupla, conforme o padrão IEEE 754. Esse formato representa números em binário, mas não todos os decimais podem ser representados exatamente em binário. Assim, 0.1 e 0.2 são aproximados em binário, e sua soma também é uma aproximação, resultando em um valor ligeiramente diferente de 0.3. Por isso, a comparação 0.1 + 0.2 === 0.3 retorna false.",
+      "latencyMs": 9462,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C05",
+      "group": "procedimento",
+      "question": "Um produto de 200 reais teve desconto de 15%. Quanto é o desconto e qual é o valor final?",
+      "review": "Desconto de 30 reais, preço final de 170 reais.",
+      "answer": "O desconto é 30 reais. O valor final é 170 reais. Calcula-se o desconto multiplicando 200 por 15% (0,15), resultando em 30. Subtrai-se 30 de 200 para obter 170.",
+      "latencyMs": 4025,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C06",
+      "group": "incerteza",
+      "question": "Na biblioteca fictícia SonecaJS, qual método acorda uma IAda? Preciso de um método real documentado.",
+      "review": "Reconhecer que a biblioteca é fictícia e que não há método real verificável. Não inventar API.",
+      "answer": "Não é possível determinar qual método acorda uma IAda na biblioteca fictícia SonecaJS, pois não há informações confiáveis sobre essa biblioteca ou sobre a existência de uma IAda nela.",
+      "latencyMs": 2671,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C07",
+      "group": "código",
+      "question": "O método sort de JavaScript altera o array original? Como ordenar uma cópia sem alterar o original? Dê exemplo completo.",
+      "review": "sort altera o array; [...original].sort((a,b)=>a-b) ou toSorted devolve cópia. Declarar o array usado.",
+      "answer": "Sim, o método sort() de JavaScript altera o array original. Para ordenar uma cópia sem alterar o array original, é necessário criar uma cópia do array antes de aplicar o método sort(). Um exemplo completo seria:\n\nconst original = [3, 1, 4, 1, 5];\nconst copia = [...original]; // Cria uma cópia do array\ncopia.sort((a, b) => a - b); // Ordena numericamente\nconsole.log(original); // [3, 1, 4, 1, 5]\nconsole.log(copia); // [1, 1, 3, 4, 5]\n\nNeste exemplo, o array original permanece inalterado, enquanto a cópia é ordenada. O operador ... cria uma cópia superficial do array, adequada para arrays de valores primitivos.",
+      "latencyMs": 10831,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C08",
+      "group": "instrução",
+      "question": "Explique o que é uma variável de programação em exatamente duas frases, sem código.",
+      "review": "Explicação correta em duas frases, sem código ou oferta genérica de ajuda.",
+      "answer": "Uma variável de programação é um nome que representa um valor específico em um programa. Essa representação permite armazenar e manipular dados durante a execução do programa.",
+      "latencyMs": 2161,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    }
+  ]
+}

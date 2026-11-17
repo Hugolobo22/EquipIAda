@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-11-09T11:26:34.027Z",
+  "model": "qwen3:8b",
+  "selectedIds": [
+    "E01",
+    "E03",
+    "C04"
+  ],
+  "provider": "Ollama local, chamada direta ao mesmo endpoint e instruções de /api/ask",
+  "instructionHash": "42d494046ff29b5e1bf132eae65d03eeb154f1094583b8fda9ab4f06e72f1012",
+  "options": {
+    "num_predict": 448,
+    "temperature": 0.1
+  },
+  "think": false,
+  "results": [
+    {
+      "id": "E01",
+      "group": "explicação",
+      "question": "Explique a diferença entre let e const em JavaScript e dê um exemplo simples.",
+      "review": "Ambos têm escopo de bloco; const impede reatribuição, mas não congela objetos.",
+      "answer": "A diferença entre let e const em JavaScript está na reatribuição de valores. let permite reatribuir o valor da variável, enquanto const não permite. Ambos são blocos-scoped, ou seja, limitados ao bloco em que são declarados.\n\nExemplo simples:\n\nlet x = 10;\nx = 20; // Permite reatribuição\nconsole.log(x); // Saída: 20\n\nconst y = 10;\n// y = 20; // Erro: Assignment to constant variable\nconsole.log(y); // Saída: 10\n\nA escolha entre let e const depende da necessidade de alterar o valor da variável. const é preferido quando o valor não mudará, pois evita erros acidentais de reatribuição.",
+      "latencyMs": 10799,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E03",
+      "group": "explicação",
+      "question": "O que é fotossíntese e por que a luz é importante?",
+      "review": "Luz fornece energia para a planta produzir moléculas orgânicas a partir de água e CO2.",
+      "answer": "A fotossíntese é o processo pelo qual plantas, algas e algumas bactérias convertem luz solar, dióxido de carbono e água em glicose e oxigênio. A luz é importante porque fornece a energia necessária para iniciar e sustentar esse processo, permitindo que as plantas produzam o alimento que usam e liberem oxigênio para a atmosfera.",
+      "latencyMs": 5487,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C04",
+      "group": "código",
+      "question": "Por que 0.1 + 0.2 === 0.3 resulta em false em JavaScript?",
+      "review": "Representação binária em ponto flutuante produz aproximadamente 0.30000000000000004. Não chamar isso de erro de sintaxe.",
+      "answer": "Em JavaScript, a soma 0.1 + 0.2 não resulta em 0.3 porque os números em ponto flutuante (como o tipo number em JavaScript) são representados internamente em binário, e alguns decimais não podem ser representados exatamente nesse formato. Por exemplo, 0.1 e 0.2 são números que têm representações infinitas em binário, o que leva a pequenas imprecisões na soma. Quando você compara 0.1 + 0.2 com 0.3 usando ===, o resultado é false porque os valores são ligeiramente diferentes devido a essas imprecisões. Para evitar esse problema, é comum usar bibliotecas que trabalham com arredondamento ou com números em formato decimal, como o decimal.js.",
+      "latencyMs": 10555,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    }
+  ]
+}

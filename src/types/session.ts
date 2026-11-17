@@ -13,13 +13,15 @@ export type PrankId =
   | "dramatic-delay"
   | "maintenance";
 
-export type SessionStage = "idle" | "prank" | "answering" | "answered";
+export type SessionStage = "idle" | "prank" | "answering" | "answered" | "answer-error" | "answer-cancelled";
 
 export type SessionState = {
   /** Cópia exata do primeiro envio; a UI nunca a reescreve durante a pergunta. */
   questionOriginal: string | null;
   attemptCount: number;
   prankCount: number;
+  prankBudget: number;
+  roundCount: number;
   usedPranks: PrankId[];
   activePrank: PrankId | null;
   traits: Traits;
@@ -32,7 +34,10 @@ export type SessionEvent =
   | { type: "SHOW_PRANK"; prank: PrankId }
   | { type: "RESOLVE_PRANK" }
   | { type: "SKIP" }
+  | { type: "REQUEST_ANSWER" }
   | { type: "ANSWER" }
+  | { type: "ANSWER_ERROR" }
+  | { type: "CANCEL_ANSWER" }
   | { type: "RESET_QUESTION" };
 
 export type ChaosDecision = { kind: "prank"; prank: PrankId } | { kind: "answer" } | { kind: "await-prank"; prank: PrankId };

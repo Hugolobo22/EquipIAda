@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
-import type { MascotEmotion, MascotGesture } from "@/types/mascot";
+import { EMOTIONS, type MascotEmotion, type MascotGesture } from "@/types/mascot";
 
 type Props = {
   emotion: MascotEmotion;
@@ -25,7 +25,7 @@ export const Mascot = forwardRef<SVGSVGElement, Props>(function Mascot({ emotion
       className={`iada-svg emotion-${emotion} gesture-${gesture}`}
       viewBox="0 0 310 305"
       role="img"
-      aria-label={`IAda, mascote robô, expressão ${emotion}`}
+      aria-label={`IAda, mascote robô, expressão ${EMOTIONS.find(item => item.key === emotion)?.label ?? "Normal"}`}
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>

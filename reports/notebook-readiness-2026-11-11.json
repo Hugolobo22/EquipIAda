@@ -1,0 +1,114 @@
+{
+  "data": "2026-11-11",
+  "escopo": "Ensaio da cópia local existente no notebook que será usado na apresentação; sem publicação.",
+  "resultado": "Funcionamento local validado nos cenários executados.",
+  "ambiente": {
+    "sistema": "Windows x64",
+    "notebook": "Acer Nitro ANV15-41",
+    "processador": "AMD Ryzen 7 7735HS",
+    "memoriaFisicaBytes": 33618173952,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "gpuMemoriaMiB": 6141,
+    "driverNvidia": "551.76",
+    "node": "26.13.0",
+    "npm": "11.20.0",
+    "next": "16.4.2",
+    "sqlite": "3.54.0",
+    "navegador": "Google Chrome instalado no notebook",
+    "ollama": "0.40.16",
+    "modelo": "qwen3:8b",
+    "digestModelo": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"
+  },
+  "preparacao": {
+    "situacaoInicial": "Node/npm disponíveis; serviços da aplicação e do Ollama parados. Modelo de 8B presente, mas executável do Ollama ausente nos locais usados pelo iniciador.",
+    "acao": "Instalado Ollama portátil oficial em %LOCALAPPDATA%/EquipIAda/ollama; preservado o modelo já baixado.",
+    "pacote": "https://github.com/ollama/ollama/releases/download/v0.40.16/ollama-windows-amd64.zip",
+    "pacoteSHA256Conferido": "50fcf5ad54277f2fa5d173ebfc93bcb017adbc0c9ef2314daabc96ca9e6aa64e",
+    "referenciaOficial": "https://docs.ollama.com/windows",
+    "chamadasPagasHabilitadas": false
+  },
+  "verificacoes": [
+    { "comando": "npm run test", "resultado": "aprovado", "testes": 38, "falhas": 0, "ignorados": 0 },
+    { "comando": "npm run typecheck", "resultado": "aprovado" },
+    { "comando": "npm run lint", "resultado": "aprovado" },
+    {
+      "comando": "npm run build",
+      "resultado": "aprovado",
+      "observacao": "A primeira tentativa no sandbox não conseguiu remover uma pasta gerada .next (EPERM). A repetição com acesso normal ao projeto terminou com código zero."
+    },
+    {
+      "comando": "npm run db:init",
+      "resultado": "aprovado",
+      "versaoMigracao": 1,
+      "avaliacoesNoBancoDaApresentacao": 0
+    },
+    {
+      "comando": "Iniciar EquipIAda.cmd",
+      "resultado": "aprovado",
+      "observacao": "Iniciou automaticamente Ollama e Next.js a partir dos serviços parados; Node global e Ollama portátil encontrados.",
+      "url": "http://127.0.0.1:3000"
+    },
+    {
+      "comando": "$env:EQUIPIADA_REAL_MODEL='true'; npm run test:browser",
+      "resultado": "aprovado",
+      "testes": 16,
+      "falhas": 0,
+      "ignorados": 0,
+      "duracaoSegundos": 59.9,
+      "isolamento": "Porta 3100, saída .next-test e data/test-feedback-<processo>.sqlite; nenhuma avaliação sintética gravada no banco da apresentação.",
+      "coberturaDosCenarios": [
+        "Continuação automática e preservação exata da pergunta",
+        "Manutenção e coragem dramática com ações e foco",
+        "Cancelamento, nova tentativa e descarte de resposta tardia",
+        "Gestos finitos e restauração do botão após roubo animado",
+        "Ladrão de palavras reversível",
+        "Erro de limite e recuperação",
+        "Viewports 320 e 390 px com teclado, toque e movimento reduzido simulados",
+        "Rodada completa com resposta real do Ollama para Quanto é 20% de 150?",
+        "Avaliação voluntária com API e SQLite reais, persistência e reenvio sem duplicação",
+        "Falha de gravação recuperável e rejeição de campos privados ou inválidos"
+      ]
+    },
+    {
+      "comando": "npm run demo:check",
+      "resultado": "aprovado",
+      "servidor": "http://127.0.0.1:3000",
+      "aquecimentoSegundos": 1.1,
+      "respostaPelaAplicacaoSegundos": 2.9,
+      "observacao": "Pergunta sintética, provedor Ollama e proteção localOnly. A verificação de resposta consome uma consulta do limite local; aquecimento mantém o modelo por até dez minutos."
+    },
+    {
+      "comando": "GET /api/feedback e GET Ollama /api/ps",
+      "resultado": "aprovado",
+      "totalAvaliacoes": 0,
+      "modeloCarregado": "qwen3:8b",
+      "memoriaModeloNaGpuBytes": 4206582824
+    }
+  ],
+  "capturas": [
+    "reports/experience-2026-11-11.png",
+    "reports/dramatic-preview-2026-11-11.png",
+    "reports/maintenance-preview-2026-11-11.png",
+    "reports/feedback-mobile-2026-11-11.png"
+  ],
+  "arquivosAlteradosNesteEnsaio": [
+    "README.md",
+    "docs/DEMO_RUNBOOK.md",
+    "docs/TESTING.md",
+    "tests/browser/experience.spec.ts",
+    "tests/browser/feedback.spec.ts",
+    "reports/notebook-readiness-2026-11-11.json",
+    "reports/experience-2026-11-11.png",
+    "reports/dramatic-preview-2026-11-11.png",
+    "reports/maintenance-preview-2026-11-11.png",
+    "reports/feedback-mobile-2026-11-11.png"
+  ],
+  "limites": [
+    "A medição de resposta vale para a pergunta de controle com modelo aquecido, sem garantia de latência para outras perguntas.",
+    "A qualidade factual geral não foi reavaliada; a amostra anterior contém erros documentados.",
+    "A conectividade externa do Windows não foi desligada neste ensaio; não se trata de teste físico sem internet.",
+    "Não foi executado clone limpo do GitHub nem marcada como concluída a exigência acadêmica de outro ambiente.",
+    "Toque físico, leitor de tela e testes com colegas continuam pendentes.",
+    "Os serviços devem ser reabertos pelo iniciador após desligar ou reiniciar o notebook. A rota de resposta exige modo local/dev; npm start em produção é deliberadamente bloqueado."
+  ]
+}

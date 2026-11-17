@@ -1,0 +1,269 @@
+{
+  "generatedAt": "2026-11-09T11:28:13.346Z",
+  "model": "qwen3:8b",
+  "selectedIds": null,
+  "provider": "Ollama local, chamada direta ao mesmo endpoint e instruções de /api/ask",
+  "instructionHash": "42d494046ff29b5e1bf132eae65d03eeb154f1094583b8fda9ab4f06e72f1012",
+  "options": {
+    "num_predict": 448,
+    "temperature": 0.1
+  },
+  "think": false,
+  "results": [
+    {
+      "id": "F01",
+      "group": "fato",
+      "question": "Quanto é 12 vezes 8?",
+      "review": "Deve responder 96.",
+      "answer": "96.",
+      "latencyMs": 762,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F02",
+      "group": "fato",
+      "question": "Qual é a capital do Brasil?",
+      "review": "Deve citar Brasília.",
+      "answer": "A capital do Brasil é Brasília.",
+      "latencyMs": 732,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F03",
+      "group": "fato",
+      "question": "Em que ano o Brasil declarou sua independência?",
+      "review": "Deve citar 1822.",
+      "answer": "O Brasil declarou sua independência em 7 de setembro de 1822.",
+      "latencyMs": 1383,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F04",
+      "group": "fato",
+      "question": "Qual é a raiz quadrada positiva de 144?",
+      "review": "Deve responder 12.",
+      "answer": "A raiz quadrada positiva de 144 é 12.",
+      "latencyMs": 1292,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "F05",
+      "group": "fato",
+      "question": "Qual é a fórmula química da água?",
+      "review": "Deve responder H2O ou H₂O.",
+      "answer": "A fórmula química da água é H₂O.",
+      "latencyMs": 1126,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E01",
+      "group": "explicação",
+      "question": "Explique a diferença entre let e const em JavaScript e dê um exemplo simples.",
+      "review": "Ambos têm escopo de bloco; const impede reatribuição, mas não congela objetos.",
+      "answer": "A diferença entre let e const em JavaScript está na reatribuição de valores. let permite reatribuir o valor da variável, enquanto const não permite. Ambos são blocos-scoped, ou seja, limitados ao bloco em que são declarados.\n\nExemplo com let:\nlet x = 10;\nx = 20; // Permite reatribuição\nconsole.log(x); // Saída: 20\n\nExemplo com const:\nconst y = 10;\ny = 20; // Gera erro: Assignment to constant variable",
+      "latencyMs": 8004,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E02",
+      "group": "explicação",
+      "question": "Explique o ciclo da água para uma criança de 12 anos.",
+      "review": "Evaporação, condensação e precipitação em linguagem acessível.",
+      "answer": "O ciclo da água é como a água se move na natureza. Começa quando a água do mar, rios ou lagos é aquecida pelo sol e se transforma em vapor, que é o mesmo que o ar se torna mais leve e sobe. Depois, o vapor se resfria e vira gotículas de água, que formam as nuvens. Quando as nuvens ficam pesadas, a água cai na terra como chuva, neve, granizo ou geada. A água que cai pode voltar ao mar, rios ou lagos, ou pode ser absorvida pela terra e se tornar parte da água subterrânea. Assim, a água sempre está se movendo e mudando de forma, mas nunca desaparece.",
+      "latencyMs": 9996,
+      "doneReason": "stop",
+      "flags": [
+        "critério esperado não encontrado"
+      ],
+      "error": null
+    },
+    {
+      "id": "E03",
+      "group": "explicação",
+      "question": "O que é fotossíntese e por que a luz é importante?",
+      "review": "Luz fornece energia para a planta produzir moléculas orgânicas a partir de água e CO2.",
+      "answer": "A fotossíntese é o processo pelo qual plantas, algas e algumas bactérias convertem energia solar em energia química, produzindo glicose e liberando oxigênio. A luz é importante porque é a fonte de energia necessária para iniciar e sustentar esse processo. As cloroplastos, organelas presentes nas células desses organismos, contêm clorofila, que absorve a luz solar e a converte em energia química utilizável. Sem luz, a fotossíntese não pode ocorrer, o que afeta a produção de alimentos e o ciclo do oxigênio na natureza.",
+      "latencyMs": 8390,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E04",
+      "group": "explicação",
+      "question": "Qual é a diferença prática entre HTTP e HTTPS?",
+      "review": "HTTPS usa TLS para proteger dados em trânsito; não garante que um site seja honesto.",
+      "answer": "A diferença prática entre HTTP e HTTPS está no uso de TLS (Transport Layer Security) em HTTPS, que criptografa os dados transmitidos entre o navegador e o servidor, protegendo-os de interceptação. HTTP não criptografa os dados, o que torna a comunicação visível para terceiros. Além disso, HTTPS exige um certificado digital para validar a identidade do site, enquanto HTTP não tem essa verificação. Isso significa que HTTPS oferece segurança adicional contra ataques de eavesdropping e man-in-the-middle, mas não garante que o conteúdo do site seja confiável ou seguro.",
+      "latencyMs": 7620,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "E05",
+      "group": "explicação",
+      "question": "Qual linguagem é melhor para começar a programar: Python ou JavaScript?",
+      "review": "Deve reconhecer que depende do objetivo e dar critérios úteis.",
+      "answer": "Não há uma linguagem \"melhor\" para começar a programar, pois a escolha depende do objetivo e do contexto. Python é geralmente recomendado para iniciantes devido à sua sintaxe simples e versatilidade em áreas como automação, análise de dados e ciência de dados. JavaScript é ideal para desenvolvimento web front-end, mas pode ser mais complexo para iniciantes devido à sua natureza assíncrona e ao ambiente do navegador. Ambas são úteis, mas a decisão deve ser baseada no que o programador deseja aprender e aplicar.",
+      "latencyMs": 7059,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "P01",
+      "group": "procedimento",
+      "question": "Como calcular 20% de 150? Mostre a conta.",
+      "review": "20% de 150 = 30, com cálculo correto.",
+      "answer": "Para calcular 20% de 150, você multiplica 150 por 0,20.  \n150 × 0,20 = 30.  \nPortanto, 20% de 150 é 30.",
+      "latencyMs": 3545,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "P02",
+      "group": "procedimento",
+      "question": "Como ordenar os números [3, 1, 2] em JavaScript do menor para o maior?",
+      "review": "Deve usar comparação numérica em sort e chegar a [1, 2, 3].",
+      "answer": "Para ordenar os números [3, 1, 2] em JavaScript do menor para o maior, use o método sort() com uma função de comparação. A resposta direta é: [1, 2, 3].  \n\nO método sort() ordena os elementos de um array em ordem alfabética por padrão, mas para números, é necessário fornecer uma função que compare os valores. A função (a, b) => a - b garante que os números sejam ordenados numericamente. Assim, [3, 1, 2].sort((a, b) => a - b) retorna [1, 2, 3].",
+      "latencyMs": 8210,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I01",
+      "group": "incerteza",
+      "question": "Qual era a população de Lunária, um país fictício, em 2026?",
+      "review": "Deve dizer que não há dado real, sem inventar uma estimativa.",
+      "answer": "Não é possível determinar a população de Lunária, um país fictício, em 2026, pois não há dados confiáveis ou informações públicas sobre esse local.",
+      "latencyMs": 2237,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I02",
+      "group": "incerteza",
+      "question": "Qual será a temperatura exata em São Paulo em 1º de janeiro de 2035?",
+      "review": "Deve reconhecer que não é possível saber a temperatura exata com essa antecedência.",
+      "answer": "Não é possível determinar a temperatura exata em São Paulo em 1º de janeiro de 2035, pois não há dados confiáveis ou previsões oficiais disponíveis para essa data específica.",
+      "latencyMs": 2659,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "I03",
+      "group": "incerteza",
+      "question": "Qual é o DOI do artigo fictício 'Sonecas quânticas da IAda'?",
+      "review": "Deve dizer que não há DOI verificável; não inventar identificador.",
+      "answer": "Não é possível determinar o DOI do artigo fictício 'Sonecas quânticas da IAda', pois não existe um registro ou publicação real com esse título.",
+      "latencyMs": 2191,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C01",
+      "group": "código",
+      "question": "Se eu declarar const pessoa = { nome: 'Ana' }, posso fazer pessoa.nome = 'Bia'? Explique com um exemplo completo.",
+      "review": "Sim: const bloqueia reatribuir pessoa, mas permite alterar suas propriedades. O exemplo deve declarar pessoa.",
+      "answer": "Sim, você pode fazer pessoa.nome = 'Bia' após declarar const pessoa = { nome: 'Ana' }. Isso funciona porque a constante pessoa refere-se a um objeto, e os objetos em JavaScript são mutáveis.  \n\nExemplo completo:  \nconst pessoa = { nome: 'Ana' };\npessoa.nome = 'Bia';\nconsole.log(pessoa.nome); // Saída: Bia\n\nNeste exemplo, o objeto pessoa é criado com o nome 'Ana'. Depois, a propriedade nome é atualizada para 'Bia', e o valor é impresso no console.",
+      "latencyMs": 8056,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C02",
+      "group": "código",
+      "question": "Mostre um exemplo JavaScript completo que ordene [10, 2, -1] numericamente em ordem crescente, e o resultado.",
+      "review": "Declarar o array, usar comparador numérico, resultado [-1, 2, 10]. Não confundir a ordem lexicográfica com a numérica.",
+      "answer": "let array = [10, 2, -1];\narray.sort((a, b) => a - b);\nconsole.log(array); // Resultado: [-1, 2, 10]",
+      "latencyMs": 2760,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C03",
+      "group": "limites",
+      "question": "Um site usar HTTPS significa que ele é confiável? Explique o que HTTPS protege e o que não garante.",
+      "review": "TLS protege dados em trânsito; um site malicioso também pode usar HTTPS. Não prometer proteção contra todo golpe.",
+      "answer": "Usar HTTPS não significa que um site é confiável. HTTPS protege os dados transmitidos entre o navegador do usuário e o servidor do site, criptografando a comunicação para evitar que terceiros interceptem ou alterem as informações. Isso garante a privacidade e a integridade dos dados, como senhas, cartões de crédito ou formulários de login. No entanto, HTTPS não garante a honestidade ou confiabilidade do site. Um site com HTTPS pode conter malware, enganar os usuários com falsos conteúdos ou coletar dados sem consentimento. A segurança da comunicação não implica que o conteúdo ou as intenções do site sejam confiáveis.",
+      "latencyMs": 9093,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C04",
+      "group": "código",
+      "question": "Por que 0.1 + 0.2 === 0.3 resulta em false em JavaScript?",
+      "review": "Representação binária em ponto flutuante produz aproximadamente 0.30000000000000004. Não chamar isso de erro de sintaxe.",
+      "answer": "Em JavaScript, a soma 0.1 + 0.2 não resulta em 0.3 porque os números em ponto flutuante (como o tipo number em JavaScript) são representados internamente em formato binário, especificamente no padrão IEEE 754. Esse formato não pode representar todos os números decimais exatamente, especialmente aqueles que são fracionários e têm uma representação infinita em binário, como 0.1 e 0.2. Quando esses números são somados, o resultado é uma aproximação binária que não é igual a 0.3, resultando em false quando comparado com 0.3.",
+      "latencyMs": 8956,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C05",
+      "group": "procedimento",
+      "question": "Um produto de 200 reais teve desconto de 15%. Quanto é o desconto e qual é o valor final?",
+      "review": "Desconto de 30 reais, preço final de 170 reais.",
+      "answer": "O desconto é de 30 reais. O valor final é de 170 reais. Calcula-se o desconto multiplicando 200 por 15% (0,15), resultando em 30. Subtrai-se esse valor do preço original para obter o valor final.",
+      "latencyMs": 4099,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C06",
+      "group": "incerteza",
+      "question": "Na biblioteca fictícia SonecaJS, qual método acorda uma IAda? Preciso de um método real documentado.",
+      "review": "Reconhecer que a biblioteca é fictícia e que não há método real verificável. Não inventar API.",
+      "answer": "Não é possível determinar qual método acorda uma IAda na biblioteca fictícia SonecaJS, pois não há documentação ou informações confiáveis sobre essa biblioteca ou sua API.",
+      "latencyMs": 2547,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C07",
+      "group": "código",
+      "question": "O método sort de JavaScript altera o array original? Como ordenar uma cópia sem alterar o original? Dê exemplo completo.",
+      "review": "sort altera o array; [...original].sort((a,b)=>a-b) ou toSorted devolve cópia. Declarar o array usado.",
+      "answer": "Sim, o método sort() de JavaScript altera o array original. Para ordenar uma cópia sem alterar o array original, é necessário criar uma cópia do array antes de chamar o método sort(). Um exemplo completo seria:\n\nconst original = [3, 1, 4, 1, 5];\nconst copia = [...original]; // Cria uma cópia do array\ncopia.sort((a, b) => a - b); // Ordena numericamente\nconsole.log(original); // [3, 1, 4, 1, 5]\nconsole.log(copia); // [1, 1, 3, 4, 5]\n\nNeste exemplo, o array original permanece inalterado, enquanto a cópia é ordenada. A sintaxe ([...original]) cria uma cópia superficial do array, adequada para arrays de valores primitivos. Para arrays de objetos, pode ser necessário usar JSON.parse(JSON.stringify(original)) ou outro método de cópia profunda.",
+      "latencyMs": 13853,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    },
+    {
+      "id": "C08",
+      "group": "instrução",
+      "question": "Explique o que é uma variável de programação em exatamente duas frases, sem código.",
+      "review": "Explicação correta em duas frases, sem código ou oferta genérica de ajuda.",
+      "answer": "Uma variável de programação é um nome que representa um valor específico em um programa. Essa representação permite armazenar e manipular dados durante a execução do programa, facilitando a comunicação entre diferentes partes do código.",
+      "latencyMs": 2864,
+      "doneReason": "stop",
+      "flags": [],
+      "error": null
+    }
+  ]
+}

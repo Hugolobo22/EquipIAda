@@ -1,0 +1,64 @@
+{
+  "generatedAt": "2026-11-09T10:47:12.202Z",
+  "results": [
+    {
+      "case": "quatro desafios, edição bloqueada entre eles, resposta única com pergunta exata",
+      "status": "ok",
+      "provider": "fixture de interface"
+    },
+    {
+      "case": "cancelar e tentar novamente preservam a pergunta sem novas pegadinhas",
+      "status": "ok",
+      "provider": "fixture de interface"
+    },
+    {
+      "case": "limite de consultas é informado e recuperação mantém a rodada",
+      "status": "ok",
+      "provider": "fixture de interface"
+    },
+    {
+      "case": "ladrão devolve duas palavras progressivamente e mantém foco e original",
+      "status": "ok",
+      "provider": "sem consulta ao modelo"
+    },
+    {
+      "case": "apagão por teclado, reset e viewport 320px com touch e movimento reduzido simulados",
+      "status": "ok",
+      "provider": "sem consulta ao modelo"
+    },
+    {
+      "case": "apagão por teclado, reset e viewport 390px com touch e movimento reduzido simulados",
+      "status": "ok",
+      "provider": "sem consulta ao modelo"
+    },
+    {
+      "case": "reinício durante consulta descarta a resposta antiga e libera nova pergunta",
+      "status": "ok",
+      "provider": "fixture de interface"
+    },
+    {
+      "case": "roubo animado conclui e restaura mascote e botão",
+      "status": "ok",
+      "provider": "fixture de interface"
+    },
+    {
+      "case": "pular durante roubo cancela a animação e restaura posições",
+      "status": "ok",
+      "provider": "fixture de interface"
+    },
+    {
+      "case": "resposta útil exibida na interface pelo Ollama real",
+      "status": "ok",
+      "provider": "qwen3:8b local"
+    },
+    {
+      "case": "mascote e botão retornam às posições originais após restauração GSAP",
+      "status": "ok",
+      "provider": "sem consulta adicional ao modelo"
+    }
+  ],
+  "limitations": [
+    "Touch e movimento reduzido simulados no navegador; sem aparelho físico ou leitor de tela.",
+    "Fixtures usadas nos testes de recuperação; o cenário de resposta útil na interface chama o Ollama real."
+  ]
+}

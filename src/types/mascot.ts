@@ -12,12 +12,14 @@ export type MascotState = {
   emotion: MascotEmotion;
   gesture: MascotGesture;
   speech: string;
+  speechRevision: number;
 };
 
 export const initialMascotState: MascotState = {
   emotion: "neutral",
   gesture: "wave",
   speech: "Oi, humano! Eu sou a IAda. Você veio perguntar alguma coisa? Que inconveniente...",
+  speechRevision: 0,
 };
 
 export const EMOTIONS: { key: MascotEmotion; label: string; subtitle: string }[] = [

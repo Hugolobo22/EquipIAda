@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { chooseAnswerReadySpeech, chooseAnswerSpeech, choosePrankSpeech } from "../src/lib/contextualSpeech.ts";
+import { chooseAnswerReadySpeech, chooseAnswerSpeech, choosePrankResolvedSpeech, choosePrankSpeech } from "../src/lib/contextualSpeech.ts";
 import { createSessionState, sessionReducer } from "../src/lib/sessionEngine.ts";
 
 function start(question) {
@@ -50,4 +50,14 @@ test("a fala após resposta mantém o contexto no balão sem incorporar a pergun
   assert.match(chooseAnswerReadySpeech(code).text, /código/i);
   assert.match(chooseAnswerReadySpeech(calculation).text, /conta/i);
   assert.equal(chooseAnswerReadySpeech(calculation).text.includes(calculation.questionOriginal), false);
+});
+
+test("falas variam entre rodadas e a resolução corresponde ao desafio concluído", () => {
+  const session = start("Uma pergunta com dado privado X7Q9.");
+  const first = choosePrankSpeech("blackout", session);
+  const next = choosePrankSpeech("blackout", { ...session, roundCount: session.roundCount + 1 });
+  assert.notEqual(first.text, next.text);
+  assert.equal(next.text.includes("X7Q9"), false);
+  assert.match(choosePrankResolvedSpeech("maintenance").text, /soneca desligada/i);
+  assert.match(choosePrankResolvedSpeech("dramatic-delay").text, /cem por cento/i);
 });

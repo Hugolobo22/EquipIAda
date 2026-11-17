@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  chooseNextAction, createSessionState, INITIAL_TRAITS, isMagicWordReply, MAX_PRANKS, sessionReducer,
+  chooseNextAction, createSessionState, INITIAL_TRAITS, isMagicWordReply, isQuestionLocked, MAX_PRANKS, sessionReducer,
 } from "../src/lib/sessionEngine.ts";
 
 function start(question = "Como funciona o JavaScript?") {
@@ -24,6 +24,7 @@ test("traços evoluem, ficam entre 0 e 100 e persistem na próxima pergunta", ()
   for (let index = 0; index < 40; index++) state = sessionReducer(state, { type: "REGISTER_ATTEMPT" });
   assert.equal(state.traits.patience, 0);
   assert.equal(state.traits.sarcasm, 100);
+  state = sessionReducer(state, { type: "REQUEST_ANSWER" });
   state = sessionReducer(state, { type: "ANSWER" });
   state = sessionReducer(state, { type: "START_QUESTION", question: "Outra pergunta" });
   assert.equal(state.traits.patience, 0);
@@ -76,7 +77,9 @@ test("pular e chegar ao limite sempre levam ao encerramento", () => {
   assert.deepEqual(chooseNextAction(state), { kind: "answer" });
   assert.equal(sessionReducer(state, { type: "ANSWER" }).stage, "answered");
 
-  state = start();
+  state = sessionReducer(createSessionState({ ...INITIAL_TRAITS, drama: 90 }), {
+    type: "START_QUESTION", question: "Explique com cuidado. ".repeat(30),
+  });
   for (const prank of ["interrogation", "dramatic-delay", "maintenance", "runaway-button"]) {
     state = sessionReducer(state, { type: "SHOW_PRANK", prank });
     state = sessionReducer(state, { type: "RESOLVE_PRANK" });
@@ -150,4 +153,90 @@ test("catálogo esgotado encerra e reinício mantém os traços", () => {
   assert.equal(state.questionOriginal, null);
   assert.equal(state.prankCount, 0);
   assert.deepEqual(state.traits, traits);
+});
+
+test("pergunta fica bloqueada entre desafios e durante a consulta; só sucesso ou reinício libera edição", () => {
+  const original = "  Minha pergunta exata?\n";
+  assert.equal(isQuestionLocked(createSessionState()), false);
+  let state = start(original);
+  assert.equal(isQuestionLocked(state), true);
+  state = sessionReducer(state, { type: "SHOW_PRANK", prank: "maintenance" });
+  state = sessionReducer(state, { type: "RESOLVE_PRANK" });
+  assert.equal(isQuestionLocked(state), true);
+  assert.equal(sessionReducer(state, { type: "START_QUESTION", question: "Outra" }), state);
+  state = sessionReducer(state, { type: "REQUEST_ANSWER" });
+  assert.equal(state.stage, "answering");
+  assert.equal(isQuestionLocked(state), true);
+  assert.equal(sessionReducer(state, { type: "START_QUESTION", question: "Outra" }), state);
+  state = sessionReducer(state, { type: "ANSWER" });
+  assert.equal(isQuestionLocked(state), false);
+  assert.equal(state.questionOriginal, original);
+  state = sessionReducer(state, { type: "START_QUESTION", question: "Outra" });
+  assert.equal(state.questionOriginal, "Outra");
+  assert.equal(isQuestionLocked(sessionReducer(state, { type: "RESET_QUESTION" })), false);
+});
+
+for (const event of ["ANSWER_ERROR", "CANCEL_ANSWER"]) {
+  test(`${event} preserva a rodada e nova tentativa não repete pegadinhas`, () => {
+    let state = start("  Pergunta preservada?\n");
+    state = sessionReducer(state, { type: "SHOW_PRANK", prank: "blackout" });
+    state = sessionReducer(state, { type: "SKIP" });
+    state = sessionReducer(state, { type: event });
+    assert.equal(state.stage, event === "ANSWER_ERROR" ? "answer-error" : "answer-cancelled");
+    assert.equal(isQuestionLocked(state), true);
+    assert.equal(state.activePrank, null);
+    assert.deepEqual(chooseNextAction(state), { kind: "answer" });
+    assert.equal(sessionReducer(state, { type: "START_QUESTION", question: "Alterada" }), state);
+    const snapshot = structuredClone(state);
+    state = sessionReducer(state, { type: "REGISTER_ATTEMPT" });
+    state = sessionReducer(state, { type: "REQUEST_ANSWER" });
+    assert.equal(state.stage, "answering");
+    assert.equal(state.questionOriginal, snapshot.questionOriginal);
+    assert.equal(state.prankCount, snapshot.prankCount);
+    assert.deepEqual(state.traits, snapshot.traits);
+    state = sessionReducer(state, { type: "ANSWER" });
+    assert.equal(state.stage, "answered");
+  });
+}
+
+test("conclusão, falha e cancelamento fora da consulta não alteram uma rodada reiniciada", () => {
+  const initial = createSessionState();
+  for (const type of ["ANSWER", "ANSWER_ERROR", "CANCEL_ANSWER", "REQUEST_ANSWER"]) {
+    assert.equal(sessionReducer(initial, { type }), initial);
+  }
+  const state = start();
+  assert.equal(sessionReducer(state, { type: "ANSWER" }), state);
+  assert.equal(sessionReducer(state, { type: "CANCEL_ANSWER" }), state);
+});
+
+test("rodadas curtas encerram em duas cenas; longas em três, sem alterar o limite durante a rodada", () => {
+  for (const [question, drama, expected] of [["Quanto é 2+2?", 90, 2], ["Explique. ".repeat(15), 55, 3], ["Explique. ".repeat(60), 90, 4]]) {
+    let state = sessionReducer(createSessionState({ ...INITIAL_TRAITS, drama }), { type: "START_QUESTION", question });
+    assert.equal(state.prankBudget, expected);
+    const seen = new Set();
+    for (let i = 0; i < expected; i++) {
+      state = sessionReducer(state, { type: "REGISTER_ATTEMPT" });
+      const decision = chooseNextAction(state, { reducedMotion: true }, () => .1);
+      assert.equal(decision.kind, "prank");
+      assert.equal(seen.has(decision.prank), false);
+      seen.add(decision.prank);
+      state = sessionReducer(state, { type: "SHOW_PRANK", prank: decision.prank });
+      state = sessionReducer(state, { type: "RESOLVE_PRANK" });
+      assert.equal(state.prankBudget, expected);
+    }
+    assert.deepEqual(chooseNextAction(state), { kind: "answer" });
+    assert.equal(sessionReducer(state, { type: "SHOW_PRANK", prank: "blackout" }), state);
+    assert.equal(state.questionOriginal, question);
+  }
+});
+
+test("contador de rodadas só avança no início e persiste ao reiniciar sem guardar histórico", () => {
+  let state = start();
+  assert.equal(state.roundCount, 1);
+  assert.equal(sessionReducer(state, { type: "START_QUESTION", question: "Outra" }).roundCount, 1);
+  state = sessionReducer(state, { type: "RESET_QUESTION" });
+  assert.equal(state.roundCount, 1);
+  assert.equal(state.questionOriginal, null);
+  state = sessionReducer(state, { type: "START_QUESTION", question: "Outra" });
+  assert.equal(state.roundCount, 2);
 });

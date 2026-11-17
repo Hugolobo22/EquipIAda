@@ -19,11 +19,13 @@ function clampTrait(value: number) {
   return Math.max(0, Math.min(100, value));
 }
 
-export function createSessionState(traits: Traits = INITIAL_TRAITS): SessionState {
+export function createSessionState(traits: Traits = INITIAL_TRAITS, roundCount = 0): SessionState {
   return {
     questionOriginal: null,
     attemptCount: 0,
     prankCount: 0,
+    prankBudget: MAX_PRANKS,
+    roundCount,
     usedPranks: [],
     activePrank: null,
     traits: { ...traits },
@@ -31,11 +33,26 @@ export function createSessionState(traits: Traits = INITIAL_TRAITS): SessionStat
   };
 }
 
+/** Perguntas curtas têm duas cenas; longas têm três, ou quatro com drama alto. */
+export function questionPrankBudget(question: string, traits: Traits) {
+  if (question.trim().length <= 80) return 2;
+  return question.trim().length > 400 && traits.drama >= 80 ? MAX_PRANKS : 3;
+}
+
+/** A rodada termina apenas com resposta recebida ou reinício explícito. */
+export function isQuestionLocked(state: SessionState) {
+  return state.questionOriginal !== null && state.stage !== "answered";
+}
+
 export function sessionReducer(state: SessionState, event: SessionEvent): SessionState {
   switch (event.type) {
     case "START_QUESTION":
-      if (!event.question.trim() || state.stage === "prank" || state.stage === "answering") return state;
-      return { ...createSessionState(state.traits), questionOriginal: event.question };
+      if (!event.question.trim() || isQuestionLocked(state)) return state;
+      return {
+        ...createSessionState(state.traits, state.roundCount + 1),
+        questionOriginal: event.question,
+        prankBudget: questionPrankBudget(event.question, state.traits),
+      };
     case "REGISTER_ATTEMPT":
       if (!state.questionOriginal || state.stage !== "idle") return state;
       return {
@@ -51,7 +68,7 @@ export function sessionReducer(state: SessionState, event: SessionEvent): Sessio
       };
     case "SHOW_PRANK":
       if (!state.questionOriginal || state.stage !== "idle" ||
-          state.prankCount >= MAX_PRANKS || state.usedPranks.includes(event.prank)) return state;
+          state.prankCount >= Math.min(MAX_PRANKS, state.prankBudget) || state.usedPranks.includes(event.prank)) return state;
       return {
         ...state,
         prankCount: state.prankCount + 1,
@@ -64,17 +81,24 @@ export function sessionReducer(state: SessionState, event: SessionEvent): Sessio
       if (state.stage !== "prank") return state;
       return { ...state, stage: "idle", activePrank: null };
     case "SKIP":
-      if (!state.questionOriginal || state.stage === "answered") return state;
+      if (!state.questionOriginal || state.stage === "answered" || state.stage === "answering") return state;
       return {
         ...state,
         stage: "answering",
         activePrank: null,
         traits: { ...state.traits, patience: clampTrait(state.traits.patience + 5) },
       };
+    case "REQUEST_ANSWER":
+      if (!state.questionOriginal || state.stage === "prank" || state.stage === "answered") return state;
+      return { ...state, stage: "answering", activePrank: null };
     case "ANSWER":
-      return state.questionOriginal ? { ...state, stage: "answered", activePrank: null } : state;
+      return state.stage === "answering" ? { ...state, stage: "answered" } : state;
+    case "ANSWER_ERROR":
+      return state.stage === "answering" ? { ...state, stage: "answer-error" } : state;
+    case "CANCEL_ANSWER":
+      return state.stage === "answering" ? { ...state, stage: "answer-cancelled" } : state;
     case "RESET_QUESTION":
-      return createSessionState(state.traits);
+      return createSessionState(state.traits, state.roundCount);
   }
 }
 
@@ -87,8 +111,8 @@ export function chooseNextAction(
   random: () => number = Math.random,
 ): ChaosDecision {
   if (state.stage === "prank" && state.activePrank) return { kind: "await-prank", prank: state.activePrank };
-  if (!state.questionOriginal || state.stage === "answering" || state.stage === "answered" ||
-      state.prankCount >= MAX_PRANKS) return { kind: "answer" };
+  if (!state.questionOriginal || state.stage !== "idle" ||
+      state.prankCount >= Math.min(MAX_PRANKS, state.prankBudget)) return { kind: "answer" };
 
   const length = state.questionOriginal.trim().length;
   const choices: Choice[] = [

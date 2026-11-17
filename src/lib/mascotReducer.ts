@@ -9,6 +9,7 @@ export function mascotReducer(state: MascotState, event: MascotEvent): MascotSta
       return {
         ...state,
         speech: event.text,
+        speechRevision: state.speechRevision + 1,
         emotion: event.emotion ?? state.emotion,
         gesture: event.gesture ?? state.gesture,
       };

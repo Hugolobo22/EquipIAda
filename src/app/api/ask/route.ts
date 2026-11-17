@@ -44,6 +44,10 @@ export async function POST(request: Request) {
   }
 
   const provider = process.env.ANSWER_PROVIDER;
+  const localOnly = (body as { localOnly?: unknown }).localOnly === true;
+  if (localOnly && provider !== "ollama") {
+    return error(503, "LOCAL_ONLY", "Esta consulta requer o provedor Ollama local.");
+  }
   if (provider !== "ollama" && provider !== "openai") {
     return error(503, "NOT_CONFIGURED", "Escolha um provedor de IA antes de responder.");
   }
